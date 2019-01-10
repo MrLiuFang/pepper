@@ -48,7 +48,7 @@
 		<rocketmq-client.version>4.3.0</rocketmq-client.version>
 		<spring-boot-starter-rocketmq.version>1.0.0-SNAPSHOT</spring-boot-starter-rocketmq.version>
 		<javassist.version>3.23.1-GA</javassist.version>
-		<dubbo.verison>2.6.5</dubbo.verison>
+		<dubbo.verison>2.6.2</dubbo.verison>
 		<spring-context-support.version>1.0.2</spring-context-support.version>
 		<spring-cloud.version>2.0.2.RELEASE</spring-cloud.version>
 	</properties>
