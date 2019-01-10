@@ -1,0 +1,3 @@
+dubboExcptionFilter=com.pepper.core.exception.DubboExceptionFilter
+traceProvider=com.pepper.ddubbo.core.TraceProviderFilter
+traceConsumer=com.pepper.ddubbo.core.TraceConsumerFilter

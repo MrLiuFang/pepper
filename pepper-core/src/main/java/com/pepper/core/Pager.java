@@ -1,0 +1,90 @@
+package com.pepper.core;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.lang.NonNull;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.pepper.core.constant.GlobalConstant;
+
+/**
+ * 分页返回数据信息
+ */
+public class Pager<T> extends ResultData implements Serializable {
+	private static final long serialVersionUID = -2185444016922016927L;
+	private long totalRow;
+	private int pageSize = 20;
+	private int pageNo = 1;
+	private List<T> results = new ArrayList<T>();
+	private JpqlParameter jpqlParameter;
+
+	public List<T> getResults() {
+		return results;
+	}
+
+	public Pager<T> setResults(@NonNull final List<T> results) {
+		this.results = results;
+		return this;
+	}
+
+	public long getTotalRow() {
+		return totalRow;
+	}
+
+	public Pager<T> setTotalRow(@NonNull final Long totalRow) {
+		this.totalRow = totalRow;
+		return this;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public Pager<T> setPageSize(@NonNull final Integer pageSize) {
+		this.pageSize = pageSize;
+		return this;
+	}
+
+	public int getPageNo() {
+		return pageNo;
+	}
+
+	public Pager<T> setPageNo(@NonNull final Integer pageNo) {
+		this.pageNo = pageNo;
+		return this;
+	}
+
+	public JpqlParameter getJpqlParameter() {
+		return jpqlParameter;
+	}
+
+	public Pager() {
+		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		HttpServletRequest request = requestAttributes.getRequest();
+		String pageSize = request.getParameter(GlobalConstant.PAGE_SIZE);
+		if (NumberUtils.isDigits(request.getParameter(GlobalConstant.PAGE_SIZE))) {
+			this.setPageSize(Integer.valueOf(pageSize));
+		}else{
+			this.setPageSize(30);
+		}
+		String pageNo = request.getParameter(GlobalConstant.PAGE_NO);
+		if (NumberUtils.isDigits(pageNo)) {
+			this.setPageNo(Integer.valueOf(pageNo));
+		}else{
+			this.setPageNo(1);
+		}
+		
+		jpqlParameter = new JpqlParameter();
+	}
+	
+	
+	
+	
+
+}
