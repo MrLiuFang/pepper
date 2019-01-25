@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.pepper.core.ResultEnum.Code;
 import com.pepper.util.BeanToMapUtil;
 
@@ -14,6 +17,8 @@ import com.pepper.util.BeanToMapUtil;
  * @author mrliu
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(Include.NON_NULL)
 public class ResultData implements Serializable {
 
 	/**

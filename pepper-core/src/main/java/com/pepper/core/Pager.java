@@ -11,11 +11,16 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.pepper.core.constant.GlobalConstant;
 
 /**
  * 分页返回数据信息
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(Include.NON_NULL)
 public class Pager<T> extends ResultData implements Serializable {
 	private static final long serialVersionUID = -2185444016922016927L;
 	private long totalRow;

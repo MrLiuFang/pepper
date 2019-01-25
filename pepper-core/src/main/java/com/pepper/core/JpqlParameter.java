@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pepper.core.constant.GlobalConstant;
 
 /**
- * 
+ * 构建查询参数
  * @author mrliu
  *
  */
