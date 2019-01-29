@@ -6,10 +6,10 @@ import org.springframework.util.StringUtils;
 
 public class Md5Util {
 	// 公盐
-	public static final String PUBLIC_SALT = "qicloud";
+	public static final String PUBLIC_SALT = "pepper";
 	// 十六进制下数字到字符的映射数组
 	private final static String[] hexDigits = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d",
-			"e", "f" };
+			"e", "f"};
 
 	/**
 	 * 用户密码加密，盐值为 ：私盐+公盐
@@ -20,7 +20,7 @@ public class Md5Util {
 	 *            私盐
 	 * @return MD5加密字符串
 	 */
-	public static String encryptPassword(String password, String salt) {
+	public static String encryptPassword(final String password,final String salt) {
 		return encodeByMD5(PUBLIC_SALT + password + salt);
 	}
 
@@ -31,9 +31,8 @@ public class Md5Util {
 	 * @param password
 	 * @return
 	 */
-	public static String encryptPassword(String password) {
-		String pwdMd5 = encodeByMD5Real(password);
-		return encodeByMD5(PUBLIC_SALT + pwdMd5);
+	public static String encryptPassword(final String password) {
+		return encodeByMD5(PUBLIC_SALT + password);
 	}
 
 	/**
@@ -42,7 +41,7 @@ public class Md5Util {
 	 * @param originString
 	 * @return
 	 */
-	public synchronized static String encodeByMD5(String originString) {
+	public synchronized static String encodeByMD5(final String originString) {
 		String res = encodeByMD5Real(originString);
 		if (StringUtils.hasText(res)) {
 			return res.toUpperCase();
@@ -56,7 +55,7 @@ public class Md5Util {
 	 * @param originString
 	 * @return
 	 */
-	public synchronized static String encodeByMD5Real(String originString) {
+	public synchronized static String encodeByMD5Real(final String originString) {
 		if (originString != null) {
 			try {
 				// 创建具有指定算法名称的信息摘要
@@ -79,7 +78,7 @@ public class Md5Util {
 	 * @param 字节数组
 	 * @return 十六进制字符串
 	 */
-	private static String byteArrayToHexString(byte[] b) {
+	private static String byteArrayToHexString(final byte[] b) {
 		StringBuffer resultSb = new StringBuffer();
 		for (int i = 0; i < b.length; i++) {
 			resultSb.append(byteToHexString(b[i]));
@@ -88,7 +87,7 @@ public class Md5Util {
 	}
 
 	/** 将一个字节转化成十六进制形式的字符串 */
-	private static String byteToHexString(byte b) {
+	private static String byteToHexString(final byte b) {
 		int n = b;
 		if (n < 0)
 			n = 256 + n;
@@ -98,6 +97,6 @@ public class Md5Util {
 	}
 
 	public static void main(String agr[]) {
-		System.out.println(Md5Util.encryptPassword("admin"));
+		System.out.println(Md5Util.encryptPassword(Md5Util.encodeByMD5("admin"),"admin"));
 	}
 }
