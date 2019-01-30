@@ -34,5 +34,10 @@ public abstract class BaseControllerImpl implements BaseController {
 		}
 		return null;
 	}
+	
+	@Override
+	public Object getCurrentUser() {
+		return null;
+	}
 
 }
