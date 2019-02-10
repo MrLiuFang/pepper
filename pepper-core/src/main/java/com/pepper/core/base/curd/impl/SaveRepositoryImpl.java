@@ -1,14 +1,13 @@
 package com.pepper.core.base.curd.impl;
 
 import java.util.Map;
-import javax.annotation.Resource;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.hibernate.Session;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.pepper.core.base.curd.RepositoryParameter;
 import com.pepper.core.base.curd.SaveRepository;
 
@@ -18,15 +17,13 @@ import com.pepper.core.base.curd.SaveRepository;
  *
  * @param <T>
  */
-@Repository
 public class SaveRepositoryImpl<T>  implements SaveRepository<T> {
 
-	@Resource
 	private EntityManager entityManager;
-
-	@SuppressWarnings("unused")
-	private Session getSession() {
-		return entityManager.unwrap(Session.class);
+	
+	public SaveRepositoryImpl(EntityManager entityManager) {
+		super();
+		this.entityManager = entityManager;
 	}
 	
 	@Override

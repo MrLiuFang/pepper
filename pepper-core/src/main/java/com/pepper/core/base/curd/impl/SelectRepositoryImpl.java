@@ -1,11 +1,9 @@
 package com.pepper.core.base.curd.impl;
 
 import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -14,25 +12,18 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.hibernate.Session;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
-import org.springframework.stereotype.Repository;
 
 import com.pepper.core.Pager;
 import com.pepper.core.base.curd.PredicateBuilder;
 import com.pepper.core.base.curd.RepositoryParameter;
 import com.pepper.core.base.curd.SelectRepository;
 import com.pepper.core.base.curd.SortBuilder;
-import com.pepper.util.SpringContextUtil;
 
 /**
  * 为兼容其它数据库所有操作均不提供本地sql封装，均采用jpql操作！
@@ -40,28 +31,24 @@ import com.pepper.util.SpringContextUtil;
  *
  * @param <T>
  */
-@Repository
 public class SelectRepositoryImpl<T> implements SelectRepository<T> {
 	
-	@Resource
 	private EntityManager entityManager;
 
+	private Class<T> clazz;
 	
-	@SuppressWarnings("unchecked")
-	public Class<T> getTClass()
-    {
-        Class<T> tClass = (Class<T>)((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-        return tClass;
-    }
+	private SimpleJpaRepository<T, Serializable> simpleJpaRepository;
 
-	@SuppressWarnings("unused")
-	private Session getSession() {
-		return entityManager.unwrap(Session.class);
+	public SelectRepositoryImpl(EntityManager entityManager, Class<T> clazz ,SimpleJpaRepository<T, Serializable> simpleJpaRepository) {
+		super();
+		this.entityManager = entityManager;
+		this.clazz = clazz;
+		this.simpleJpaRepository = simpleJpaRepository;
 	}
-	
+
 	@Override
 	public List<T> find(final String jpql) {
-		TypedQuery<T> query = entityManager.createQuery(jpql,getTClass());
+		TypedQuery<T> query = entityManager.createQuery(jpql,clazz);
 		return query.getResultList();
 	}
 
@@ -196,7 +183,7 @@ public class SelectRepositoryImpl<T> implements SelectRepository<T> {
 
 	@Override
 	public List<T> findAll(final Map<String, Object> searchParameter, final Map<String, Object> sortParameter) {
-		return findAll(1,Integer.MAX_VALUE,searchParameter,sortParameter).getContent();
+		return findAll(Integer.MAX_VALUE,1,searchParameter,sortParameter).getContent();
 	}
 	
 	private Page<T> findAll(final Integer pageSize,final Integer pageNo,final Map<String, Object> searchParameter,final Map<String, Object> sortParameter) {
@@ -212,27 +199,10 @@ public class SelectRepositoryImpl<T> implements SelectRepository<T> {
 		//构建排序
 		Sort sort = SortBuilder.builder(sortParameter);
 		Pageable pageable = PageRequest.of(pageNo - 1, pageSize,sort);
-		Page<T> page = getSimpleJpaRepository().findAll(specification,pageable);
+		Page<T> page = simpleJpaRepository.findAll(specification,pageable);
 		return page;
 	}
 	
-	@SuppressWarnings("unchecked")
-	private SimpleJpaRepository<T, Serializable> getSimpleJpaRepository(){
-		Class<T> tClass = (Class<T>)((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-		Object object = SpringContextUtil.getBean(tClass.getName());
-		if(object!=null){
-			return (SimpleJpaRepository<T, Serializable>) object;
-		}else{
-			ApplicationContext applicationContext = SpringContextUtil.getApplicationContext();
-			DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory)applicationContext.getAutowireCapableBeanFactory();
-			BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(SimpleJpaRepository.class);
-			beanDefinitionBuilder.addConstructorArgValue(tClass);
-			beanDefinitionBuilder.addConstructorArgValue(entityManager);
-			BeanDefinition beanDefinition =  beanDefinitionBuilder.getBeanDefinition();
-			beanFactory.registerBeanDefinition(tClass.getName(), beanDefinition);
-			return (SimpleJpaRepository<T, Serializable>) SpringContextUtil.getBean(tClass.getName());
-		}
-	}
 	
 	
 }

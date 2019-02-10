@@ -2,12 +2,10 @@ package com.pepper.core.base.curd.impl;
 
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.hibernate.Session;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,11 +18,14 @@ import com.pepper.core.base.curd.UpdateRepository;
  *
  * @param <T>
  */
-@Repository
 public class UpdateRepositoryImpl<T>  implements UpdateRepository<T> {
 
-	@Resource
 	private EntityManager entityManager;
+
+	public UpdateRepositoryImpl(EntityManager entityManager) {
+		super();
+		this.entityManager = entityManager;
+	}
 
 	private Session getSession() {
 		return entityManager.unwrap(Session.class);

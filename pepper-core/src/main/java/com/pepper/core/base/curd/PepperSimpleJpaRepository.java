@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 
 import org.hibernate.Session;
@@ -14,6 +13,10 @@ import org.springframework.data.repository.NoRepositoryBean;
 
 import com.pepper.core.Pager;
 import com.pepper.core.base.BaseDao;
+import com.pepper.core.base.curd.impl.DeleteRepositoryImpl;
+import com.pepper.core.base.curd.impl.SaveRepositoryImpl;
+import com.pepper.core.base.curd.impl.SelectRepositoryImpl;
+import com.pepper.core.base.curd.impl.UpdateRepositoryImpl;
 
 /**
  * 
@@ -21,41 +24,41 @@ import com.pepper.core.base.BaseDao;
  *
  */
 @NoRepositoryBean
-public abstract class PepperSimpleJpaRepository<T> extends SimpleJpaRepository<T, Serializable>	implements BaseDao<T> {
-	
-	@Resource
+public abstract class PepperSimpleJpaRepository<T> extends SimpleJpaRepository<T, Serializable> implements BaseDao<T> {
+
 	private SelectRepository<T> selectRepository;
-	
-	@Resource
+
 	private UpdateRepository<T> updateRepository;
-	
-	@Resource
+
 	private SaveRepository<T> saveRepository;
-	
-	@Resource
+
 	private DeleteRepository<T> deleteRepository;
-	
-	@Resource
+
 	protected EntityManager entityManager;
 
 	protected JpaEntityInformation<T, Serializable> entityInformation;
-	
+
 	// T的具体类
 	protected Class<T> clazz;
-	
-	public PepperSimpleJpaRepository(JpaEntityInformation<T, Serializable> entityInformation, EntityManager entityManager){
+
+	public PepperSimpleJpaRepository(JpaEntityInformation<T, Serializable> entityInformation,
+			EntityManager entityManager) {
 		super(entityInformation, entityManager);
+		this.entityManager = entityManager;
 		this.entityInformation = entityInformation;
-		this.clazz = entityInformation.getJavaType();		
+		this.clazz = entityInformation.getJavaType();
+		updateRepository = new UpdateRepositoryImpl<T>(entityManager);
+		selectRepository = new SelectRepositoryImpl<T>(entityManager, clazz, this);
+		saveRepository = new SaveRepositoryImpl<T>(entityManager);
+		deleteRepository = new DeleteRepositoryImpl<T>(entityManager);
 	}
+
 	
+
 	protected Session getSession() {
 		return entityManager.unwrap(Session.class);
 	}
-	
-	
-	
-	
+
 	@Override
 	public List<T> findAll(Map<String, Object> searchParameter) {
 		return selectRepository.findAll(searchParameter);
@@ -100,7 +103,7 @@ public abstract class PepperSimpleJpaRepository<T> extends SimpleJpaRepository<T
 	public Map<String, Object> findOneToMap(String jpql, Map<String, Object> parameter) {
 		return selectRepository.findOneToMap(jpql, parameter);
 	}
-	
+
 	@Override
 	public Pager<T> findNavigator(Pager<T> pager, String jpql) {
 		return selectRepository.findNavigator(pager, jpql);
@@ -141,7 +144,6 @@ public abstract class PepperSimpleJpaRepository<T> extends SimpleJpaRepository<T
 	public void update(T entity) {
 		updateRepository.update(entity);
 	}
-	
 
 	@Override
 	public int save(String jpql) {
