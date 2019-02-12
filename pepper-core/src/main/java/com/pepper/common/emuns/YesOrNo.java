@@ -13,30 +13,27 @@ public enum YesOrNo implements IEnum{
 
 	private final int key;
 
-	private final String name;
+	private final String desc;
 
-	private YesOrNo(int key, String name) {
+	private YesOrNo(int key, String desc) {
 		this.key = key;
-		this.name = name;
+		this.desc = desc;
 	}
 
 	@Override
-	@JsonValue
 	public Integer getKey() {
 		return key;
 	}
 
 	@Override
 	public String getName() {
-		return name;
+		return this.toString();
 	}
-
-	public static YesOrNo get(int key) {
-		for (YesOrNo e : YesOrNo.values()) {
-			if (e.getKey() == key) {
-				return e;
-			}
-		}
-		return NO;
+	
+	@Override
+	@JsonValue
+	public String getDesc(){
+		return desc;
 	}
+	
 }

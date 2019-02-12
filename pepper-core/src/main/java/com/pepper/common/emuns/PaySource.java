@@ -14,30 +14,26 @@ public enum PaySource implements IEnum {
 
 	private final int key;
 
-	private final String name;
+	private final String desc;
 
-	private PaySource(int key, String name) {
+	private PaySource(int key, String desc) {
 		this.key = key;
-		this.name = name;
+		this.desc = desc;
 	}
 
 	@Override
-	@JsonValue
 	public Integer getKey() {
 		return key;
 	}
 
 	@Override
 	public String getName() {
-		return name;
+		return this.toString();
 	}
-
-	public static PaySource get(int key) {
-		for (PaySource e : PaySource.values()) {
-			if (e.getKey() == key) {
-				return e;
-			}
-		}
-		return PC;
+	
+	@Override
+	@JsonValue
+	public String getDesc(){
+		return desc;
 	}
 }

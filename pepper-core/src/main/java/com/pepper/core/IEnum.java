@@ -10,4 +10,6 @@ public interface IEnum {
 	Integer getKey();
 
 	String getName();
+
+	String getDesc();
 }

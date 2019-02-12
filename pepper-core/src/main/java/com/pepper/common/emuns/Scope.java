@@ -4,35 +4,32 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.pepper.core.IEnum;
 
 public enum Scope implements IEnum {
-	PC(0, "前端"), CONSOLE(1, "后台"), APP(2, "移动端"), WEIXIN(3, "微信端");
+	FRONT(0, "前端"), CONSOLE(1, "后台"), APP(2, "移动端"), WEIXIN(3, "微信端");
 
 	private final int key;
 
-	private final String name;
+	private final String desc;
 
-	private Scope(int key, String name) {
+	private Scope(int key, String desc) {
 		this.key = key;
-		this.name = name;
+		this.desc = desc;
 	}
-
+	
 	@Override
-	@JsonValue
 	public Integer getKey() {
 		return key;
 	}
 
 	@Override
 	public String getName() {
-		return name;
+		return this.toString();
 	}
-
-	public static Scope get(int key) {
-		for (Scope e : Scope.values()) {
-			if (e.getKey() == key) {
-				return e;
-			}
-		}
-		return CONSOLE;
+	
+	@Override
+	@JsonValue
+	public String getDesc(){
+		return desc;
 	}
+	
 	
 }

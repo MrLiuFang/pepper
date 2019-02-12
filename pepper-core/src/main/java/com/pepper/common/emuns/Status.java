@@ -10,34 +10,31 @@ import com.pepper.core.IEnum;
  *
  */
 public enum Status implements IEnum {
-	NORMAL(0, "禁用"), DISABLE(1, "正常");
+	DISABLE(0, "禁用"), NORMAL(1, "正常");
 
 	private final int key;
 
-	private final String name;
+	private final String desc;
 
-	private Status(int key, String name) {
+	private Status(int key, String desc) {
 		this.key = key;
-		this.name = name;
+		this.desc = desc;
 	}
 
 	@Override
-	@JsonValue
 	public Integer getKey() {
 		return key;
 	}
 
 	@Override
 	public String getName() {
-		return name;
+		return this.toString();
+	}
+	
+	@Override
+	@JsonValue
+	public String getDesc(){
+		return desc;
 	}
 
-	public static Status get(int key) {
-		for (Status e : Status.values()) {
-			if (e.getKey() == key) {
-				return e;
-			}
-		}
-		return NORMAL;
-	}
 }

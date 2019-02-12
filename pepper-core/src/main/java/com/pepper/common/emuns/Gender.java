@@ -14,31 +14,27 @@ public enum Gender implements IEnum {
 
 	private final int key;
 
-	private final String name;
+	private final String desc;
 
-	private Gender(int key, String name) {
+	private Gender(int key, String desc) {
 		this.key = key;
-		this.name = name;
+		this.desc = desc;
 	}
 
 	@Override
-	@JsonValue
 	public Integer getKey() {
 		return key;
 	}
 
 	@Override
 	public String getName() {
-		return name;
+		return this.toString();
 	}
-
-	public static Gender get(int key) {
-		for (Gender e : Gender.values()) {
-			if (e.getKey() == key) {
-				return e;
-			}
-		}
-		return FEMALE;
+	
+	@Override
+	@JsonValue
+	public String getDesc(){
+		return desc;
 	}
 
 }

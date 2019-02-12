@@ -13,30 +13,26 @@ public enum ThirdTypeEnum implements IEnum{
 
 	private final int key;
 
-	private final String name;
+	private final String desc;
 
-	private ThirdTypeEnum(int key, String name) {
+	private ThirdTypeEnum(int key, String desc) {
 		this.key = key;
-		this.name = name;
+		this.desc = desc;
 	}
 
 	@Override
-	@JsonValue
 	public Integer getKey() {
 		return key;
 	}
 
 	@Override
 	public String getName() {
-		return name;
+		return this.toString();
 	}
-
-	public static ThirdTypeEnum get(int key) {
-		for (ThirdTypeEnum e : ThirdTypeEnum.values()) {
-			if (e.getKey() == key) {
-				return e;
-			}
-		}
-		return WeiXin;
+	
+	@Override
+	@JsonValue
+	public String getDesc(){
+		return desc;
 	}
 }

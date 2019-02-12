@@ -1,5 +1,6 @@
 package com.pepper.core.base.curd;
 
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,6 +17,7 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.util.StringUtils;
 
+import com.pepper.core.IEnum;
 import com.pepper.core.constant.SearchConstant;
 
 /**
@@ -71,10 +73,18 @@ public class PredicateBuilder {
 		Predicate predicate = null;
 		switch (searchType.toUpperCase()) {
 		case SearchConstant.EQUAL:
-			predicate = criteriaBuilder.equal(path.as(classz), value);
+			if (classz.isEnum()) {
+				predicate = predicateEnum(path,classz,value,criteriaBuilder);
+			}else{
+				predicate = criteriaBuilder.equal(path.as(classz), value);
+			}
 			break;
 		case SearchConstant.NOTEQUAL:
-			predicate = criteriaBuilder.notEqual(path.as(classz), value);
+			if (classz.isEnum()) {
+				predicate = predicateEnum(path,classz,value,criteriaBuilder);
+			}else{
+				predicate = criteriaBuilder.equal(path.as(classz), value);
+			}
 			break;
 		case SearchConstant.ISNULL:
 			predicate = criteriaBuilder.isNull(path.as(classz));
@@ -115,6 +125,30 @@ public class PredicateBuilder {
 			break;
 		default:
 			break;
+		}
+		return predicate;
+	}
+	
+	private static synchronized Predicate predicateEnum(final Path<?> path, final Class<?> classz, final Object value, final CriteriaBuilder criteriaBuilder){
+		Predicate predicate = null;
+		if (classz.isEnum()) {
+			if(value.getClass().isEnum()){
+				predicate = criteriaBuilder.equal(path.as(classz),value);
+			}else if(value instanceof String){
+				try {
+					Method method = classz.getMethod("values");
+					IEnum inter[] = (IEnum[]) method.invoke(null);
+					for (IEnum ienum : inter) {
+						if(ienum.toString().equals(value)){
+							predicate = criteriaBuilder.equal(path.as(classz),ienum.getKey());
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}else{
+			predicate = criteriaBuilder.equal(path.as(classz), value);
 		}
 		return predicate;
 	}
