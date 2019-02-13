@@ -46,7 +46,7 @@ public interface BaseService<T>{
 
 	public <S extends T> S save(S entity);
 
-	public Optional<T> findById(Serializable id);
+	public T findById(Serializable id);
 
 	public boolean existsById(Serializable id);
 

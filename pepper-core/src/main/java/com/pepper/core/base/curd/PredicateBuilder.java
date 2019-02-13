@@ -45,6 +45,11 @@ public class PredicateBuilder {
 			Object value = entry.getValue();
 			if (StringUtils.hasText(key)) {
 				if (value != null) {
+					if(value instanceof  String){
+						if(!StringUtils.hasLength(value.toString())){
+							continue;
+						}
+					}
 					String searchStr[] = key.split("_");
 					if (searchStr.length != 2) {
 						continue;
@@ -52,12 +57,10 @@ public class PredicateBuilder {
 					String searchType = searchStr[0];
 					String field = searchStr[1];
 					Path<?> path = root.get(field);
-					Predicate predicate = null;
-
 					if (path == null) {
 						continue;
 					} 
-					predicate = criteriaBuilder(path, path.getJavaType(), searchType, value, criteriaBuilder);
+					Predicate predicate = criteriaBuilder(path, path.getJavaType(), searchType, value, criteriaBuilder);
 					if (predicate != null) {
 						predicates.add(predicate);
 					}
@@ -128,6 +131,8 @@ public class PredicateBuilder {
 		}
 		return predicate;
 	}
+	
+	
 	
 	private static synchronized Predicate predicateEnum(final Path<?> path, final Class<?> classz, final Object value, final CriteriaBuilder criteriaBuilder){
 		Predicate predicate = null;

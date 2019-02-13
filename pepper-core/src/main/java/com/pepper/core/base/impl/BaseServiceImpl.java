@@ -105,8 +105,8 @@ public abstract class BaseServiceImpl<T>	 implements BaseService<T> {
 	}
 
 	@Override
-	public Optional<T> findById(Serializable id) {
-		return baseDao.findById(id);
+	public T findById(Serializable id) {
+		return baseDao.findById(id).get();
 	}
 
 	@Override

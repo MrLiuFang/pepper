@@ -6,6 +6,9 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import org.hibernate.annotations.GenericGenerator;
 
 @MappedSuperclass
@@ -42,6 +45,7 @@ public class BaseModel implements Serializable{
 		this.id = id;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getCreateDate() {
 		return createDate;
 	}
@@ -50,10 +54,11 @@ public class BaseModel implements Serializable{
 		this.createDate = createDate;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getUpdateDate() {
 		return updateDate;
 	}
-
+	
 	public void setUpdateDate(Date updateDate) {
 		this.updateDate = updateDate;
 	}

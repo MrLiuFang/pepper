@@ -1,9 +1,12 @@
 package com.pepper.core;
 
+import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -14,22 +17,29 @@ import com.pepper.core.constant.GlobalConstant;
  * @author mrliu
  *
  */
-public class JpqlParameter {
+public class JpqlParameter implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3482359007036882853L;
 
 	@JsonIgnore
 	private Map<String, Object> searchParameter = new HashMap<String, Object>();
 	
 	@JsonIgnore
 	private Map<String, Object> sortParameter = new HashMap<String, Object>();
-	
+		
 	public JpqlParameter() {
-		super();
-		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-		HttpServletRequest request = requestAttributes.getRequest();
+		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+		if(requestAttributes == null){
+			return;
+		}
+		HttpServletRequest request = ((ServletRequestAttributes)requestAttributes).getRequest();
 		setJpqlParameter(request,GlobalConstant.JPQL_PREFIX_SEARCH,searchParameter);
 		setJpqlParameter(request,GlobalConstant.JPQL_PREFIX_SORT,sortParameter);
 	}
-
+	
 	private void setJpqlParameter(HttpServletRequest request, String prefix, Map<String, Object> jpqlParameter) {
 		Enumeration<String> paramNames = request.getAttributeNames();
 		while (paramNames!=null && paramNames.hasMoreElements()) {

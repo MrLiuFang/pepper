@@ -116,7 +116,7 @@ public class SelectRepositoryImpl<T> implements SelectRepository<T> {
 
 	@Override
 	public Pager<T> findNavigator(final Pager<T> pager) {
-		Page<T> page = findAll(pager.getPageNo(),pager.getPageSize(),pager.getJpqlParameter().getSearchParameter(),pager.getJpqlParameter().getSortParameter());
+		Page<T> page = findAll(pager.getPageSize(),pager.getPageNo(),pager.getJpqlParameter().getSearchParameter(),pager.getJpqlParameter().getSortParameter());
 		pageConvertPager(page,pager);
 		return pager;
 	}

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.pepper.core.Pager;
 import com.pepper.core.base.BaseController;
 /**
  * 
@@ -39,5 +40,6 @@ public abstract class BaseControllerImpl implements BaseController {
 	public Object getCurrentUser() {
 		return null;
 	}
+	
 
 }

@@ -27,7 +27,6 @@ public class SaveRepositoryImpl<T>  implements SaveRepository<T> {
 	}
 	
 	@Override
-	@Transactional(propagation=Propagation.REQUIRED)
 	public int save(final String jpql,final Map<String, Object> parameter) {
 		Query query = entityManager.createQuery(jpql);
 		RepositoryParameter.setParameter(query, parameter);
@@ -35,7 +34,6 @@ public class SaveRepositoryImpl<T>  implements SaveRepository<T> {
 	}
 
 	@Override
-	@Transactional(propagation=Propagation.REQUIRED)
 	public int save(final String jpql) {
 		return save(jpql, null);
 	}

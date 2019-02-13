@@ -27,13 +27,11 @@ public class DeleteRepositoryImpl<T>  implements DeleteRepository<T> {
 	}
 	
 	@Override
-	@Transactional(propagation=Propagation.REQUIRED)
 	public int delete(String jpql) {
 		return delete(jpql, null);
 	}
 
 	@Override
-	@Transactional(propagation=Propagation.REQUIRED)
 	public int delete(String jpql, Map<String, Object> parameter) {
 		Query query = entityManager.createQuery(jpql);
 		RepositoryParameter.setParameter(query, parameter);

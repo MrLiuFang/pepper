@@ -52,6 +52,7 @@
 		<spring-cloud.version>2.0.2.RELEASE</spring-cloud.version>
 		<curator-framework.version>4.1.0</curator-framework.version>
 		<zkclient.version>0.11</zkclient.version>
+		<hutool.version>4.4.5</hutool.version>
 	</properties>
 
 
@@ -143,6 +144,12 @@
 
 
 			<!-- 第三方包↓↓↓ -->
+
+			<dependency>
+				<groupId>cn.hutool</groupId>
+				<artifactId>hutool-all</artifactId>
+				<version>${hutool.version}</version>
+			</dependency>
 
 
 			<!-- 非官方starters -->
@@ -304,7 +311,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-log4j2</artifactId>
 		</dependency>
-		
+
 		<!-- springboot配置提示 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -385,6 +392,10 @@
 			<artifactId>commons-pool2</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>cn.hutool</groupId>
+			<artifactId>hutool-all</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>io.netty</groupId>
