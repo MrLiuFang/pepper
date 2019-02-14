@@ -15,6 +15,8 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import com.pepper.core.IEnum;
@@ -27,6 +29,7 @@ import com.pepper.core.constant.SearchConstant;
  */
 public class PredicateBuilder {
 
+	private static Logger log = LoggerFactory.getLogger(PredicateBuilder.class);
 	/**
 	 * 构建查询条件
 	 * @param root
@@ -56,7 +59,12 @@ public class PredicateBuilder {
 					}
 					String searchType = searchStr[0];
 					String field = searchStr[1];
-					Path<?> path = root.get(field);
+					Path<?> path = null;
+					try{
+						path = root.get(field);
+					}catch (Exception e) {
+						e.printStackTrace();
+					}
 					if (path == null) {
 						continue;
 					} 

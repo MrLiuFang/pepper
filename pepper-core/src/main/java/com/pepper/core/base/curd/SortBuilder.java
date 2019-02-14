@@ -24,7 +24,7 @@ public class SortBuilder {
 	 */
 	public synchronized static Sort builder(final Map<String, Object> sortParameter){
 		if(sortParameter==null){
-			return null;
+			return Sort.unsorted();
 		}
 		List<Order> orders = new ArrayList<Order>();
 		Iterator<Entry<String, Object>> iterator = sortParameter.entrySet().iterator();
