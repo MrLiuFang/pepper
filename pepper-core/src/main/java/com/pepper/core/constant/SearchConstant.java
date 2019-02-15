@@ -32,6 +32,8 @@ public class SearchConstant {
 	 */
 	public static final String IN = "IN";
 	
+	public static final String NOTIN = "NOTIN";
+	
 	/**
 	 * 模糊查询(用于字符串)
 	 */

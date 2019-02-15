@@ -78,7 +78,6 @@ public class PredicateBuilder {
 		return predicates;
 	}
 
-	@SuppressWarnings({ "unchecked" })
 	private static synchronized Predicate criteriaBuilder(final Path<?> path, Class<?> classz, final String searchType,
 			final Object value, final CriteriaBuilder criteriaBuilder) {
 		Predicate predicate = null;
@@ -103,18 +102,12 @@ public class PredicateBuilder {
 		case SearchConstant.ISNOTNULL:
 			predicate = criteriaBuilder.isNotNull(path.as(classz));
 			break;
+		case SearchConstant.NOTIN:
+			CriteriaBuilder.In<Object> notIn = predicateIn(path,classz,value,criteriaBuilder);
+			predicate = criteriaBuilder.not(notIn);
+			break;
 		case SearchConstant.IN:
-			CriteriaBuilder.In<Object> in = criteriaBuilder.in(path.as(classz));
-			if (value instanceof String) {
-				for (String v : String.valueOf(value).split(",")) {
-					in.value(v);
-				}
-			} else if (value instanceof Collection) {
-				for (Object v : (Collection<Object>) value) {
-					in.value(v);
-				}
-			}
-			predicate = in;
+			predicate = predicateIn(path,classz,value,criteriaBuilder);
 			break;
 		case SearchConstant.LIKE:
 			predicate = criteriaBuilder.like(path.as(String.class), "%" + value + "%");
@@ -140,7 +133,24 @@ public class PredicateBuilder {
 		return predicate;
 	}
 	
-	
+	@SuppressWarnings("unchecked")
+	private static synchronized CriteriaBuilder.In<Object> predicateIn(final Path<?> path, final Class<?> classz, final Object value, final CriteriaBuilder criteriaBuilder){
+		CriteriaBuilder.In<Object> in = criteriaBuilder.in(path.as(classz));
+		if (value instanceof String) {
+			for (String v : String.valueOf(value).split(",")) {
+				in.value(v);
+			}
+		} else if (value instanceof Collection) {
+			for (Object v : (Collection<Object>) value) {
+				in.value(v);
+			}
+		}else if (value instanceof Object[]) {
+			for (Object v : (Object[])value) {
+				in.value(v);
+			}
+		}
+		return in;
+	}
 	
 	private static synchronized Predicate predicateEnum(final Path<?> path, final Class<?> classz, final Object value, final CriteriaBuilder criteriaBuilder){
 		Predicate predicate = null;
