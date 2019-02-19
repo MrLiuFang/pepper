@@ -20,7 +20,7 @@
 	<properties>
 		<quartz.version>2.3.0</quartz.version>
 		<druid.spring.boot.starter.version>1.1.10</druid.spring.boot.starter.version>
-		<dubbo.spring.boot.starter.version>0.2.1-SNAPSHOT</dubbo.spring.boot.starter.version>
+		<dubbo-spring-boot-starter.version>2.7.0</dubbo-spring-boot-starter.version>
 		<mysql-connector.version>8.0.14</mysql-connector.version>
 		<druid.version>1.1.10</druid.version>
 		<reflections.version>0.9.11</reflections.version>
@@ -34,7 +34,7 @@
 		<jedis.version>2.9.0</jedis.version>
 		<maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
 		<springloaded.version>1.2.8.RELEASE</springloaded.version>
-		<netty-all.version>4.1.31.Final</netty-all.version>
+		<netty-all.version>4.1.33.Final</netty-all.version>
 		<fastdfs-client-java.version>1.27-SNAPSHOT</fastdfs-client-java.version>
 		<aliyun-sdk-oss.version>3.1.0</aliyun-sdk-oss.version>
 		<commons-codec.version>1.11</commons-codec.version>
@@ -47,7 +47,7 @@
 		<rocketmq-client.version>4.3.0</rocketmq-client.version>
 		<spring-boot-starter-rocketmq.version>1.0.0-SNAPSHOT</spring-boot-starter-rocketmq.version>
 		<javassist.version>3.23.1-GA</javassist.version>
-		<dubbo.verison>2.6.2</dubbo.verison>
+		<dubbo.verison>2.7.0</dubbo.verison>
 		<spring-context-support.version>1.0.2</spring-context-support.version>
 		<spring-cloud.version>2.0.2.RELEASE</spring-cloud.version>
 		<curator-framework.version>4.1.0</curator-framework.version>
@@ -82,7 +82,7 @@
 
 			<!-- dubbo -->
 			<dependency>
-				<groupId>com.alibaba</groupId>
+				<groupId>org.apache.dubbo</groupId>
 				<artifactId>dubbo</artifactId>
 				<version>${dubbo.verison}</version>
 				<exclusions>
@@ -109,6 +109,9 @@
 				<artifactId>spring-context-support</artifactId>
 				<version>${spring-context-support.version}</version>
 			</dependency>
+
+			<!-- 图形验证码 -->
+
 
 			<!-- javassist -->
 			<dependency>
@@ -159,9 +162,9 @@
 				<version>${druid.spring.boot.starter.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.alibaba.boot</groupId>
+				<groupId>org.apache.dubbo</groupId>
 				<artifactId>dubbo-spring-boot-starter</artifactId>
-				<version>${dubbo.spring.boot.starter.version}</version>
+				<version>${dubbo-spring-boot-starter.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.rocketmq</groupId>
@@ -338,7 +341,7 @@
 			</dependency> -->
 
 		<dependency>
-			<groupId>com.alibaba</groupId>
+			<groupId>org.apache.dubbo</groupId>
 			<artifactId>dubbo</artifactId>
 		</dependency>
 		<dependency>
@@ -470,6 +473,17 @@
 			<url>https://jitpack.io</url>
 			<releases>
 				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>apache.snapshots.https</id>
+			<name>Apache Development Snapshot Repository</name>
+			<url>https://repository.apache.org/content/repositories/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
 			</releases>
 			<snapshots>
 				<enabled>true</enabled>
