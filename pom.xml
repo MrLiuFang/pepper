@@ -53,6 +53,7 @@
 		<curator-framework.version>4.1.0</curator-framework.version>
 		<zkclient.version>0.11</zkclient.version>
 		<hutool.version>4.4.5</hutool.version>
+		<fescar.version>0.2.1</fescar.version>
 	</properties>
 
 
@@ -147,7 +148,6 @@
 
 
 			<!-- 第三方包↓↓↓ -->
-
 			<dependency>
 				<groupId>cn.hutool</groupId>
 				<artifactId>hutool-all</artifactId>
