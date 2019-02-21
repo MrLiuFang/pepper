@@ -61,7 +61,7 @@ public class ResultEnum {
 			return "";
 		}
 
-		public static List<Map<String, String>> getKeyVlue() {
+		public static List<Map<String, String>> getKeyValue() {
 			List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 			Code[] codes = Code.values();
 			for (Code code : codes) {
@@ -81,6 +81,6 @@ public class ResultEnum {
 		System.out.println(Code.URI_INVALID.key);
 		System.out.println(Code.URI_INVALID.name);
 		System.out.println(Code.URI_INVALID.getKey());
-		System.out.println(Code.getKeyVlue());
+		System.out.println(Code.getKeyValue());
 	}
 }
