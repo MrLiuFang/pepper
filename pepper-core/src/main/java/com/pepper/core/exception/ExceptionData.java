@@ -1,8 +1,13 @@
 package com.pepper.core.exception;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.dubbo.rpc.RpcException;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.pepper.core.ResultData;
@@ -24,7 +29,6 @@ public class ExceptionData {
 	 */
 	public Object getResultData(Throwable e, Class<?> returnType, ResponseBody methodResponseBody, ResponseBody controllerResponseBody, RestController controllerRestController) {
 		String responseType = ResponseType.getResponseType(returnType, methodResponseBody, controllerResponseBody, controllerRestController);
-		
 		if(responseType.equals(ResponseType.JSON)){
 			if (e instanceof BusinessException) {
 				return returnResultData(e,ResultEnum.Code.LOGIC_ERROR,e.getMessage());
@@ -39,15 +43,17 @@ public class ExceptionData {
 				return returnResultData(e,ResultEnum.Code.SYSTEM_ERROR,"程序可能开小差了,对此我们深表抱歉!(错误代码:Unknown)");
 			}
 		}else if (responseType.equals(ResponseType.VIEW)) {
+			HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+			response.setStatus(200);
 			if (e instanceof AuthorizeException) {
-				return returnView(returnType,"redirect:/notLogin");
+				return returnView(returnType,"forward:/notLogin",e.getMessage());
 			} else if (e instanceof NoPermissionException) {
-				return returnView(returnType,"redirect:/noPermission");
+				return returnView(returnType,"forward:/noPermission",e.getMessage());
 			} else if (e instanceof BusinessException) {
-				return returnView(returnType,"redirect:/500");
+				return returnView(returnType,"forward:/500",e.getMessage());
 			} else {
 				e.printStackTrace();
-				return "redirect:/500";
+				return returnView(returnType,"forward:/500",e.getMessage());
 			}
 		} else {
 			throw new RuntimeException(e.getMessage(),e);
@@ -62,12 +68,15 @@ public class ExceptionData {
 		return resultData;
 	}
 	
-	private Object returnView(Class<?> returnType,String viewUrl){
+	private Object returnView(Class<?> returnType,String viewUrl,String message){
 		if(returnType.getName().equals(String.class.getName())){
+			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+			request.setAttribute("message", message);
 			return viewUrl;
 		}else if(returnType.getName().equals(ModelAndView.class.getName())){
 			ModelAndView modelAndView = new ModelAndView();
 			modelAndView.setViewName(viewUrl);
+			modelAndView.addObject("message", message);
 			return modelAndView;
 		}
 		return viewUrl;
