@@ -2,14 +2,20 @@ package com.pepper.core.base;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotBlank;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.validator.constraints.Length;
+
+import com.pepper.core.validator.Validator.Delete;
+import com.pepper.core.validator.Validator.Update;
 
 @MappedSuperclass
 public class BaseModel implements Serializable{
@@ -23,6 +29,8 @@ public class BaseModel implements Serializable{
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid")
 	@Column(name = "id", length = 32)
+	@NotBlank(message="ID不能为空",groups= {Update.class,Delete.class})
+	@Length(min=32,max=32,message="ID为{max}个字符",groups= {Update.class,Delete.class})
 	protected String id;
 
 	@Column(name = "create_date", updatable = false)

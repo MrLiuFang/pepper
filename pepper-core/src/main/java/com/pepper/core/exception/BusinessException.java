@@ -1,7 +1,7 @@
 package com.pepper.core.exception;
 
 /**
- * dubbo服务层异常处理类
+ * 异常处理类
  *
  * @author mrliu
  *
