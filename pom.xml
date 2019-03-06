@@ -54,7 +54,7 @@
 		<zkclient.version>0.11</zkclient.version>
 		<hutool.version>4.4.5</hutool.version>
 		<fescar.version>0.2.1</fescar.version>
-		<zookeeper.version>3.4.9</zookeeper.version>
+		<zookeeper.version>3.5.4-beta</zookeeper.version>
 	</properties>
 
 

@@ -24,7 +24,7 @@ import org.springframework.util.StringUtils;
  * @author mrliu
  *
  */
-public class HttpRequestUtil {
+public class HttpUtil {
 
 	/**
 	 * 发送get请求
@@ -36,6 +36,24 @@ public class HttpRequestUtil {
 	 */
 	public String get(String scheme, String host, String path, Integer port) throws Exception {
 		return get(scheme, host, path, port, null);
+	}
+	
+	/**
+	 * 发送get请求
+	 * 
+	 * @param url
+	 *            请求地址
+	 * @param parameter
+	 *            参数
+	 * @return string
+	 * @throws Exception
+	 * @throws URISyntaxException
+	 */
+	public String get(String scheme, String host, String path, Integer port, Map<String, String> parameter)
+			throws Exception {
+		URI uri = createURI(scheme, host, path, port, parameter);
+		HttpGet httpget = new HttpGet(uri);
+		return execute(httpget);
 	}
 
 	/**
@@ -66,22 +84,35 @@ public class HttpRequestUtil {
 		return post(scheme, host, path, port, null, entity);
 	}
 
+	
+	
 	/**
-	 * 发送get请求
-	 * 
-	 * @param url
-	 *            请求地址
+	 * post请求
+	 * @param scheme
+	 * @param host
+	 * @param path
+	 * @param port
 	 * @param parameter
-	 *            参数
-	 * @return string
+	 * @return
 	 * @throws Exception
-	 * @throws URISyntaxException
 	 */
-	public String get(String scheme, String host, String path, Integer port, Map<String, String> parameter)
-			throws Exception {
-		URI uri = createURI(scheme, host, path, port, parameter);
-		HttpGet httpget = new HttpGet(uri);
-		return execute(httpget);
+	public String post(String scheme, String host, String path, Integer port, Map<String, String> parameter) throws Exception {
+		return post(scheme, host, path, port, parameter, null);
+	}
+	
+	/**
+	 * post请求
+	 * @param scheme
+	 * @param host
+	 * @param path
+	 * @param port
+	 * @param parameter
+	 * @param entityString
+	 * @return
+	 * @throws Exception
+	 */
+	public String post(String scheme, String host, String path, Integer port, Map<String, String> parameter, String entityString) throws Exception {
+		return post(scheme, host, path, port, parameter, entityString, null);
 	}
 
 	/**
@@ -98,13 +129,16 @@ public class HttpRequestUtil {
 	 * @throws Exception
 	 */
 	public String post(String scheme, String host, String path, Integer port, Map<String, String> parameter,
-			String entityString) throws Exception {
+			String entityString,String contentType) throws Exception {
 		URI uri = createURI(scheme, host, path, port, parameter);
 		HttpPost httpPost = new HttpPost(uri);
 		if (StringUtils.hasText(entityString)) {
 			StringEntity requestEntity = new StringEntity(entityString, "utf-8");
 			requestEntity.setContentEncoding("UTF-8");
-			requestEntity.setContentType("application/json");
+//			requestEntity.setContentType("application/json");
+			if(StringUtils.hasText(contentType)){
+				requestEntity.setContentType(contentType);
+			}
 			httpPost.setEntity(requestEntity);
 		}
 		return execute(httpPost);
