@@ -123,12 +123,15 @@ public abstract class AbsRegisterUrl implements ApplicationListener<ContextRefre
 		} else {
 			sb.append(path);
 		}
-		if(!path.equals("/"))
+		
+		if(path.equals("/"))
 		{
+			sb.append("root/");
+		}else{
 			sb.append("/");
 		}
 		sb.append(host);
-		sb.append("/");
+		sb.append(":");
 		sb.append(port);
 		Stat stat = curatorFramework.checkExists().forPath(sb.toString());
 		if(stat != null){
