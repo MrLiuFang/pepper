@@ -27,7 +27,7 @@ public class DubboVersion implements ServletContextListener {
 			pool.insertClassPath(new ClassClassPath(this.getClass()));
 			CtClass clazz = pool.getCtClass("org.apache.dubbo.config.spring.beans.factory.annotation.ReferenceAnnotationBeanPostProcessor");
 			CtMethod	ctMethod = clazz.getDeclaredMethod("findFieldReferenceMetadata");
-			ctMethod.insertAt(12, "DynamicVersion.resetVersion(reference, null, null, field);");
+			ctMethod.insertAt(12, "DubboDynamicVersion.resetVersion(reference, null, null, field);");
 			clazz.toClass();  
 		} catch (NotFoundException e) {
 			e.printStackTrace();
