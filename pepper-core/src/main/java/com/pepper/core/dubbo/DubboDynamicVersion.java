@@ -1,22 +1,23 @@
 package com.pepper.core.dubbo;
 
-import java.util.Set;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import org.reflections.Reflections;
-import org.springframework.stereotype.Controller;
+import org.apache.dubbo.config.spring.context.annotation.DubboComponentScan;
+import org.springframework.context.annotation.Import;
 
 /**
- * 动态设置duboo版本
  * 
- * @author mrliu
+ * @author Mr.Liu
  *
  */
-public class DubboDynamicVersion {
-
-	public DubboDynamicVersion() {
-		super();
-		Reflections reflections = new Reflections("com.sea.server.hessian");
-		Set<Class<?>> hessianImpls = reflections.getTypesAnnotatedWith(Controller.class);
-	}
-
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Import(DubboDynamicVersionRegistrar.class)
+public @interface DubboDynamicVersion {
+	
 }

@@ -1,7 +1,6 @@
 package com.pepper.core.gateway;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.JarURLConnection;
 import java.net.URL;
@@ -40,6 +39,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
@@ -50,34 +50,34 @@ import com.pepper.util.SpringContextUtil;
 
 /**
  * 注册资源URL（zookeeper）
+ * 
  * @author mrliu
  *
  */
-public abstract class AbsRegisterUrl implements ApplicationListener<ContextRefreshedEvent>{
-	
-	 private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+public abstract class AbsRegisterUrl implements ApplicationListener<ContextRefreshedEvent> {
+
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	@Autowired
 	private CuratorFramework curatorFramework;
-	
+
 	@Autowired
 	private Environment environment;
-	
+
 	@Autowired
 	private WebApplicationContext webApplicationConnect;
-
 
 	private String host;
 
 	private String port;
-	
+
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		init();
 	}
-	
-	protected abstract String getCodeSourcePath();
-	
+
+	protected abstract URL getCodeSourcePath();
+
 	public void init() {
 		registerUrl();
 	}
@@ -101,7 +101,7 @@ public abstract class AbsRegisterUrl implements ApplicationListener<ContextRefre
 				Set<String> pSet = pc.getPatterns();
 				resultUrl.addAll(pSet);
 			}
-			
+
 			for (String url : resultUrl) {
 				registerPath(url);
 			}
@@ -112,33 +112,32 @@ public abstract class AbsRegisterUrl implements ApplicationListener<ContextRefre
 		}
 
 	}
-	
-	private void registerPath(String path) throws Exception{
+
+	private void registerPath(String path) throws Exception {
 
 		StringBuffer sb = new StringBuffer("/url");
-		if (environment.getProperty("environment","").toLowerCase().equals("dev")) {
+		if (environment.getProperty("environment", "").toLowerCase().equals("dev")) {
 			sb.append("/");
 			sb.append(host);
 			sb.append(path);
 		} else {
 			sb.append(path);
 		}
-		
-		if(path.equals("/"))
-		{
+
+		if (path.equals("/")) {
 			sb.append("root/");
-		}else{
+		} else {
 			sb.append("/");
 		}
 		sb.append(host);
 		sb.append(":");
 		sb.append(port);
 		Stat stat = curatorFramework.checkExists().forPath(sb.toString());
-		if(stat != null){
-			curatorFramework.delete().forPath( sb.toString());
+		if (stat != null) {
+			curatorFramework.delete().forPath(sb.toString());
 		}
-		logger.info("注册url： {} --地址-- {}:{} " , path , host , port);
-		curatorFramework.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath( sb.toString());
+		logger.info("注册url： {} --地址-- {}:{} ", path, host, port);
+		curatorFramework.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(sb.toString());
 	}
 
 	/**
@@ -169,12 +168,11 @@ public abstract class AbsRegisterUrl implements ApplicationListener<ContextRefre
 		}
 		return endPoints;
 	}
-	
-
 
 	/**
 	 * 注册静态资源
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 	private void registerAssets(ServletContext servletContext) throws Exception {
 		for (String assetsPath : getAssetsList()) {
@@ -184,46 +182,44 @@ public abstract class AbsRegisterUrl implements ApplicationListener<ContextRefre
 
 	private List<String> getAssetsList() throws Exception {
 		List<String> assetsList = new ArrayList<String>();
-		String codeSourcePath = this.getCodeSourcePath();
-		File file = new File(codeSourcePath);
-		if (file.isDirectory()) {
-			String assetsPath = codeSourcePath + "META-INF/resources/assets";
-			traverseFolder(assetsPath, assetsList,codeSourcePath);
-		} else {
-			if(codeSourcePath.indexOf("!/WEB-INF/lib")>0){
-				URL url = new URL("jar", null, 0, codeSourcePath);
-				URLConnection con = url.openConnection();
-				if (con instanceof JarURLConnection) {
-					JarURLConnection result = (JarURLConnection) con;
-					JarInputStream jarInputStream = new JarInputStream(result.getInputStream());
-					JarEntry entry;
-					while ((entry = jarInputStream.getNextJarEntry()) != null) {
-						String name = entry.getName();
-						if (!entry.isDirectory() && name.indexOf("META-INF/resources/assets") == 0) {
-							assetsList.add(name.replaceAll("META-INF/resources", "").replaceAll("\\\\", "/"));
-						}
+		URL codeSourcePath = this.getCodeSourcePath();
+		if (ResourceUtils.isJarURL(codeSourcePath)) {
+			URL url = new URL("jar", null, 0, codeSourcePath.getPath());
+			URLConnection con = url.openConnection();
+			if (con instanceof JarURLConnection) {
+				JarURLConnection result = (JarURLConnection) con;
+				JarInputStream jarInputStream = new JarInputStream(result.getInputStream());
+				JarEntry entry;
+				while ((entry = jarInputStream.getNextJarEntry()) != null) {
+					String name = entry.getName();
+					if (!entry.isDirectory() && name.indexOf("META-INF/resources/assets") == 0) {
+						assetsList.add(name.replaceAll("META-INF/resources", "").replaceAll("\\\\", "/"));
 					}
-					jarInputStream.close();
 				}
-			}else{
-				JarFile jarFile =  new JarFile(file);
+				jarInputStream.close();
+			} else if (ResourceUtils.isJarFileURL((codeSourcePath))) {
+				JarFile jarFile = new JarFile(ResourceUtils.getFile(codeSourcePath));
 				Enumeration<JarEntry> enu = jarFile.entries();
 				while (enu.hasMoreElements()) {
 					JarEntry element = (JarEntry) enu.nextElement();
-					
 					String name = element.getName();
 					if (!element.isDirectory() && name.indexOf("META-INF/resources/assets") == 0) {
 						assetsList.add(name.replaceAll("META-INF/resources", "").replaceAll("\\\\", "/"));
 					}
 				}
 				jarFile.close();
+			} else {
+				File file = ResourceUtils.getFile(codeSourcePath);
+				if (file.isDirectory()) {
+					String assetsPath = codeSourcePath + "META-INF/resources/assets";
+					traverseFolder(assetsPath, assetsList, codeSourcePath.getPath());
+				}
 			}
 		}
-		
 		return assetsList;
 	}
 
-	public  void traverseFolder(String path, List<String> assetsList,String codeSourcePath) {
+	public void traverseFolder(String path, List<String> assetsList, String codeSourcePath) {
 		File file = new File(path);
 		if (file.exists()) {
 			File[] files = file.listFiles();
@@ -232,9 +228,10 @@ public abstract class AbsRegisterUrl implements ApplicationListener<ContextRefre
 			} else {
 				for (File file2 : files) {
 					if (file2.isDirectory()) {
-						traverseFolder(file2.getAbsolutePath(),assetsList,codeSourcePath);
+						traverseFolder(file2.getAbsolutePath(), assetsList, codeSourcePath);
 					} else {
-						assetsList.add(file2.getAbsolutePath().substring((codeSourcePath+"META-INF/resources").length()));
+						assetsList.add(
+								file2.getAbsolutePath().substring((codeSourcePath + "META-INF/resources").length()));
 					}
 				}
 			}
