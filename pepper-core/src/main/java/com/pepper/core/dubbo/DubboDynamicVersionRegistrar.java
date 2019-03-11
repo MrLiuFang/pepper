@@ -20,7 +20,6 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.apache.dubbo.config.spring.context.annotation.DubboComponentScan;
 import org.reflections.Reflections;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.EnvironmentAware;

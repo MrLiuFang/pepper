@@ -197,23 +197,23 @@ public abstract class AbsRegisterUrl implements ApplicationListener<ContextRefre
 					}
 				}
 				jarInputStream.close();
-			} else if (ResourceUtils.isJarFileURL((codeSourcePath))) {
-				JarFile jarFile = new JarFile(ResourceUtils.getFile(codeSourcePath));
-				Enumeration<JarEntry> enu = jarFile.entries();
-				while (enu.hasMoreElements()) {
-					JarEntry element = (JarEntry) enu.nextElement();
-					String name = element.getName();
-					if (!element.isDirectory() && name.indexOf("META-INF/resources/assets") == 0) {
-						assetsList.add(name.replaceAll("META-INF/resources", "").replaceAll("\\\\", "/"));
-					}
+			}
+		} else if (ResourceUtils.isJarFileURL((codeSourcePath))) {
+			JarFile jarFile = new JarFile(ResourceUtils.getFile(codeSourcePath));
+			Enumeration<JarEntry> enu = jarFile.entries();
+			while (enu.hasMoreElements()) {
+				JarEntry element = (JarEntry) enu.nextElement();
+				String name = element.getName();
+				if (!element.isDirectory() && name.indexOf("META-INF/resources/assets") == 0) {
+					assetsList.add(name.replaceAll("META-INF/resources", "").replaceAll("\\\\", "/"));
 				}
-				jarFile.close();
-			} else {
-				File file = ResourceUtils.getFile(codeSourcePath);
-				if (file.isDirectory()) {
-					String assetsPath = codeSourcePath + "META-INF/resources/assets";
-					traverseFolder(assetsPath, assetsList, codeSourcePath.getPath());
-				}
+			}
+			jarFile.close();
+		} else {
+			File file = ResourceUtils.getFile(codeSourcePath);
+			if (file.isDirectory()) {
+				String assetsPath = codeSourcePath.getPath() + "META-INF/resources/assets";
+				traverseFolder(assetsPath, assetsList, codeSourcePath.getPath());
 			}
 		}
 		return assetsList;
@@ -230,8 +230,7 @@ public abstract class AbsRegisterUrl implements ApplicationListener<ContextRefre
 					if (file2.isDirectory()) {
 						traverseFolder(file2.getAbsolutePath(), assetsList, codeSourcePath);
 					} else {
-						assetsList.add(
-								file2.getAbsolutePath().substring((codeSourcePath + "META-INF/resources").length()));
+						assetsList.add(file2.getAbsolutePath().substring((codeSourcePath + "META-INF/resources").length()));
 					}
 				}
 			}
