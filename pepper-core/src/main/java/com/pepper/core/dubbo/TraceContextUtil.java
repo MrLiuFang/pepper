@@ -3,7 +3,8 @@ package com.pepper.core.dubbo;
 import java.util.Map;
 import java.util.UUID;
 
-import com.alibaba.dubbo.rpc.Invocation;
+import org.apache.dubbo.rpc.Invocation;
+
 
 /**
  * 
