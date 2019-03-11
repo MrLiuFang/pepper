@@ -24,6 +24,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.UrlResource;
@@ -41,7 +42,7 @@ import org.springframework.util.StringUtils;
  * @author Mr.Liu
  *
  */
-public class DubboDynamicVersionRegistrar implements ImportBeanDefinitionRegistrar, EnvironmentAware{
+public class DubboDynamicVersionRegistrar implements ImportBeanDefinitionRegistrar, EnvironmentAware ,Ordered{
 	
 	private MultiValueMap<String, String> version = new LinkedMultiValueMap<>();
 	
@@ -188,6 +189,11 @@ public class DubboDynamicVersionRegistrar implements ImportBeanDefinitionRegistr
 	@Override
 	public void setEnvironment(Environment environment) {
 		this.environment = environment;
+	}
+
+	@Override
+	public int getOrder() {
+		return Ordered.HIGHEST_PRECEDENCE;
 	}
 	
 }
