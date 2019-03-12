@@ -55,6 +55,7 @@
 		<hutool.version>4.4.5</hutool.version>
 		<fescar.version>0.2.1</fescar.version>
 		<zookeeper.version>3.5.4-beta</zookeeper.version>
+		<kaptcha.version>2.3.2</kaptcha.version>
 	</properties>
 
 
@@ -113,7 +114,11 @@
 			</dependency>
 
 			<!-- 图形验证码 -->
-
+			<dependency>
+			    <groupId>com.github.penggle</groupId>
+			    <artifactId>kaptcha</artifactId>
+			    <version>${kaptcha.version}</version>
+			</dependency>
 
 			<!-- javassist -->
 			<dependency>

@@ -69,29 +69,10 @@ public class GlobalConstant {
 	public static final String DOMAIN_NAME = "DOMAIN_NAME";
 
 	/**
-	 * 超级验证码，手机，图片验证码都直接过，方便开发测试。
-	 */
-	public static final String SUPER_VERIFY_CODE = "SUPER_VERIFY_CODE";
-	
-	/**
-	 * 超级验证码，手机，图片验证码都直接过，方便开发测试。
-	 */
-	public static final String NOT_VERIFICATION_VERIFY_CODE = "NOT_VERIFICATION_VERIFY_CODE";
-
-	/**
 	 * 客户定制登录页
 	 */
 	public static final String CUSTOM_LOGIN_PAGE = "CUSTOM_LOGIN_PAGE";
 	
-	/**
-	 * redis中保存的登录图片验证码的值的key
-	 */
-	public static final String LOGIN_V_CODE_REDIS = "LOGIN_V_CODE_REDIS";
-
-	/**
-	 * 登录图片验证码token
-	 */
-	public static final String LOGIN_V_CODE_TOKEN = "LOGIN_V_CODE_TOKEN";
 	
 	/**
 	 * PC端后台用户登录会话token Key
@@ -157,5 +138,10 @@ public class GlobalConstant {
 	 * 表格用户排序的字段的前缀
 	 */
 	public static final String JPQL_PREFIX_SORT = "sort_";
+	
+	/**
+	 * 验证码cookie
+	 */
+	public static final String VERIFICATION_CODE_COOKIE = "VERIFICATIONCODE";
 
 }
