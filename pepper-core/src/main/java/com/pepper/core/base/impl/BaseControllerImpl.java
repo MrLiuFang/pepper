@@ -22,6 +22,8 @@ public abstract class BaseControllerImpl implements BaseController {
 	@Autowired
 	protected HttpServletResponse response;
 	
+	private AuthorizeFactory authorizeFactory;
+	
 
 	@Override
 	public String getCookie(String name) {
