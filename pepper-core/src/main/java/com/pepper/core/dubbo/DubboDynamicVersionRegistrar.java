@@ -19,6 +19,7 @@ import org.apache.commons.lang3.RandomUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.apache.dubbo.config.spring.context.annotation.DubboComponentScan;
+import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.reflections.Reflections;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -76,6 +77,8 @@ public class DubboDynamicVersionRegistrar implements ImportBeanDefinitionRegistr
 			Set<String> packagesToScan = getPackagesToScan(attributes,importingClassMetadata,"basePackages","basePackageClasses");
 			attributes = AnnotationAttributes.fromMap(importingClassMetadata.getAnnotationAttributes(SpringBootApplication.class.getName()));
 			packagesToScan.addAll(getPackagesToScan(attributes,importingClassMetadata,"scanBasePackages","scanBasePackageClasses"));
+//			attributes = AnnotationAttributes.fromMap(importingClassMetadata.getAnnotationAttributes(EnableDubbo.class.getName()));
+//			packagesToScan.addAll(getPackagesToScan(attributes,importingClassMetadata,"scanBasePackages","scanBasePackageClasses"));
 			Reflections reflections = new Reflections(convertPackage(packagesToScan));
 			Set<Class<?>> service = reflections.getTypesAnnotatedWith(Service.class);
 			dynamicServiceVersion(service);

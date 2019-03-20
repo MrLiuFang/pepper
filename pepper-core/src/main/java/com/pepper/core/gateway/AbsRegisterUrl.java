@@ -92,7 +92,7 @@ public abstract class AbsRegisterUrl implements ApplicationListener<ContextRefre
 				return;
 			}
 			List<String> endPoints = getEndPoints();
-			logger.info(endPoints.toString());
+			//logger.info(endPoints.toString());
 			Set<String> resultUrl = new HashSet<String>();
 			RequestMappingHandlerMapping bean = webApplicationConnect.getBean(RequestMappingHandlerMapping.class);
 			Map<RequestMappingInfo, HandlerMethod> handlerMethods = bean.getHandlerMethods();
@@ -136,7 +136,7 @@ public abstract class AbsRegisterUrl implements ApplicationListener<ContextRefre
 		if (stat != null) {
 			curatorFramework.delete().forPath(sb.toString());
 		}
-		logger.info("注册url： {} --地址-- {}:{} ", path, host, port);
+		//logger.info("注册url： {} --地址-- {}:{} ", path, host, port);
 		curatorFramework.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(sb.toString());
 	}
 
