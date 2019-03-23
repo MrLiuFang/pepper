@@ -66,10 +66,13 @@ public abstract class BaseControllerImpl implements BaseController {
 		ReferenceConfigCache cache = ReferenceConfigCache.getCache();
 		GenericService genericService = cache.get(reference);
 		String token = LoginTokenUtil.getLoginToken(GlobalConstant.AUTHORIZE_TOKEN);
+		if(token==null || !StringUtils.hasText(token.toString())){
+			return null;
+		}
 		// 基本类型以及Date,List,Map等不需要转换，直接调用
 		Object scope = genericService.$invoke("get", new String[] { Object.class.getName() },new Object[] { token + GlobalConstant.AUTHORIZE_TOKEN_SCOPE });
 		if (scope==null || !StringUtils.hasText(scope.toString())) {
-			throw new AuthorizeException("登录超时!请重新登录!");
+			return null;
 		}
 		Object authorizeFactory = SpringContextUtil.getBean("authorizeFactoryBean");
 		try {

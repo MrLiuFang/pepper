@@ -92,7 +92,7 @@ public abstract class AbsRegisterUrl implements ApplicationListener<ContextRefre
 				return;
 			}
 			List<String> endPoints = getEndPoints();
-			logger.info(endPoints.toString());
+			//logger.info(endPoints.toString());
 			Set<String> resultUrl = new HashSet<String>();
 			RequestMappingHandlerMapping bean = webApplicationConnect.getBean(RequestMappingHandlerMapping.class);
 			Map<RequestMappingInfo, HandlerMethod> handlerMethods = bean.getHandlerMethods();
