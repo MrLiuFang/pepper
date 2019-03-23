@@ -93,7 +93,7 @@ public class PredicateBuilder {
 			if (classz.isEnum()) {
 				predicate = predicateEnum(path,classz,value,criteriaBuilder);
 			}else{
-				predicate = criteriaBuilder.equal(path.as(classz), value);
+				predicate = criteriaBuilder.notEqual(path.as(classz), value);
 			}
 			break;
 		case SearchConstant.ISNULL:
