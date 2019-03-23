@@ -97,6 +97,7 @@ public class Md5Util {
 	}
 
 	public static void main(String agr[]) {
+		System.out.println(Md5Util.encodeByMD5("123456"));
 		System.out.println(Md5Util.encryptPassword(Md5Util.encodeByMD5("admin"),"admin"));
 	}
 }

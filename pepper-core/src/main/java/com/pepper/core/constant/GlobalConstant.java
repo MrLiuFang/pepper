@@ -16,7 +16,8 @@ public class GlobalConstant {
 	/**
 	 * 登录鉴权TOKEN(用于cookie)
 	 */
-	public static final String AUTHORIZE_TOKEN = "AUTHORIZE_TOKEN";
+//	public static final String AUTHORIZE_TOKEN = "AUTHORIZE_TOKEN";
+	public static final String AUTHORIZE_TOKEN = "token";
 	
 	/**
 	 * 登录鉴权TOKEN作用域(PC/APP/WEIXIN/CONSOLE)

@@ -25,6 +25,7 @@ public class LoginTokenUtil {
 				}
 			}
 		}
+		//从header获取token
 		if (!StringUtils.hasText(token) && request.getHeader(tokenName) != null) {
 			token = request.getHeader(tokenName).toString();
 		}
