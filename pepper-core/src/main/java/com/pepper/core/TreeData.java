@@ -1,6 +1,6 @@
 package com.pepper.core;
 
-import com.pepper.core.ResultEnum.Code;
+import com.pepper.core.ResultEnum.Status;
 
 /**
  * 
@@ -10,7 +10,7 @@ import com.pepper.core.ResultEnum.Code;
  */
 public class TreeData<T> {
 
-	private Integer code = Code.SUCCESS.getKey();
+	private Integer code = Status.SUCCESS.getKey();
 	protected String msg = "操作成功";
 	private Integer count;
 	private T data;

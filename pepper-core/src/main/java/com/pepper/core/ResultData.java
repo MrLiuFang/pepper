@@ -8,7 +8,7 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.pepper.core.ResultEnum.Code;
+import com.pepper.core.ResultEnum.Status;
 import com.pepper.util.BeanToMapUtil;
 
 /**
@@ -40,7 +40,7 @@ public class ResultData implements Serializable {
 	/**
 	 * 状态编码
 	 */
-	private Integer status = Code.SUCCESS.getKey();
+	private Integer status = Status.SUCCESS.getKey();
 
 	/**
 	 * 调转URL

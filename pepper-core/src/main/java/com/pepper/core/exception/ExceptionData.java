@@ -31,16 +31,16 @@ public class ExceptionData {
 		String responseType = ResponseType.getResponseType(returnType, methodResponseBody, controllerResponseBody, controllerRestController);
 		if(responseType.equals(ResponseType.JSON)){
 			if (e instanceof BusinessException) {
-				return returnResultData(e,ResultEnum.Code.LOGIC_ERROR,e.getMessage());
+				return returnResultData(e,ResultEnum.Status.LOGIC_ERROR,e.getMessage());
 			} else if (e instanceof AuthorizeException) {
-				return returnResultData(e,ResultEnum.Code.IS_NOT_LOGIN,e.getMessage());
+				return returnResultData(e,ResultEnum.Status.IS_NOT_LOGIN,e.getMessage());
 			} else if (e instanceof NoPermissionException) {
-				return returnResultData(e,ResultEnum.Code.NO_PERMISSION,e.getMessage());
+				return returnResultData(e,ResultEnum.Status.NO_PERMISSION,e.getMessage());
 			} else if (e instanceof RpcException) {
-				return returnResultData(e,ResultEnum.Code.SYSTEM_ERROR,"程序可能开小差了,对此我们深表抱歉!(错误代码:RpcException)");
+				return returnResultData(e,ResultEnum.Status.SYSTEM_ERROR,"程序可能开小差了,对此我们深表抱歉!(错误代码:RpcException)");
 			} else {
 				e.printStackTrace();
-				return returnResultData(e,ResultEnum.Code.SYSTEM_ERROR,"程序可能开小差了,对此我们深表抱歉!(错误代码:Unknown)");
+				return returnResultData(e,ResultEnum.Status.SYSTEM_ERROR,"程序可能开小差了,对此我们深表抱歉!(错误代码:Unknown)");
 			}
 		}else if (responseType.equals(ResponseType.VIEW)) {
 			HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
@@ -60,9 +60,9 @@ public class ExceptionData {
 		}
 	}
 	
-	private ResultData returnResultData(Throwable e, ResultEnum.Code code, String message ){
+	private ResultData returnResultData(Throwable e, ResultEnum.Status status, String message ){
 		ResultData resultData = new ResultData();
-		resultData.setStatus(code.getKey());
+		resultData.setStatus(status.getKey());
 		resultData.setExceptionMessage(e.getMessage());
 		resultData.setMessage(message);
 		return resultData;
