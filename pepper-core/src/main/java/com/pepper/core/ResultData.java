@@ -58,65 +58,57 @@ public class ResultData implements Serializable {
 		return data;
 	}
 
-	public ResultData setData(Map<String, Object> data) {
+	public void setData(Map<String, Object> data) {
 		this.data.putAll(data);
-		return this;
 	}
 
 	/**
 	 * @param javaBean
 	 */
-	public ResultData setData(Object javaBean) {
+	public void setData(Object javaBean) {
 		if (javaBean != null) {
 			BeanToMapUtil.transBeanToMap(data, javaBean);
 		}
-		return this;
 	}
 
-	public ResultData setData(String key, Object object) {
+	public void setData(String key, Object object) {
 		data.put(key, object);
-		return this;
 	}
 
-	public ResultData setData(String key, Collection<Object> collection) {
+	public void setData(String key, Collection<Object> collection) {
 		data.put(key, collection);
-		return this;
 	}
 
 	public String getMessage() {
 		return message;
 	}
 
-	public ResultData setMessage(String message) {
+	public void setMessage(String message) {
 		this.message = message;
-		return this;
 	}
 
 	public Integer getStatus() {
 		return status;
 	}
 
-	public ResultData setStatus(Integer status) {
+	public void setStatus(Integer status) {
 		this.status = status;
-		return this;
 	}
 
 	public String getExceptionMessage() {
 		return exceptionMessage;
 	}
 
-	public ResultData setExceptionMessage(String exceptionMessage) {
+	public void setExceptionMessage(String exceptionMessage) {
 		this.exceptionMessage = exceptionMessage;
-		return this;
 	}
 
 	public String getLoadUrl() {
 		return loadUrl;
 	}
 
-	public ResultData setLoadUrl(String loadUrl) {
+	public void setLoadUrl(String loadUrl) {
 		this.loadUrl = loadUrl;
-		return this;
 	}
 
 	public Integer getCode() {
