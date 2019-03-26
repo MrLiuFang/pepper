@@ -103,7 +103,7 @@ public class GlobalConstant {
 	/**
 	 * pc端用户登录会话超时时长配置文件KEY
 	 */
-	public static final String PC_SESSION_TIME_OUT = "PC.SESSION.TIME.OUT";
+	public static final String FRONT_SESSION_TIME_OUT = "FRONT.SESSION.TIME.OUT";
 	
 	/**
 	 * APP端后台用户登录会话超时时长配置文件KEY

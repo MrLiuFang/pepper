@@ -7,7 +7,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.math.NumberUtils;
-import org.springframework.lang.NonNull;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -37,7 +36,7 @@ public class Pager<T> extends ResultData implements Serializable {
 		return results;
 	}
 
-	public Pager<T> setResults(@NonNull final List<T> results) {
+	public Pager<T> setResults(final List<T> results) {
 		this.results = results;
 		return this;
 	}
@@ -46,7 +45,7 @@ public class Pager<T> extends ResultData implements Serializable {
 		return totalRow;
 	}
 
-	public Pager<T> setTotalRow(@NonNull final Long totalRow) {
+	public Pager<T> setTotalRow(final Long totalRow) {
 		this.totalRow = totalRow;
 		return this;
 	}
@@ -55,7 +54,7 @@ public class Pager<T> extends ResultData implements Serializable {
 		return pageSize;
 	}
 
-	public Pager<T> setPageSize(@NonNull final Integer pageSize) {
+	public Pager<T> setPageSize( final Integer pageSize) {
 		this.pageSize = pageSize;
 		return this;
 	}
@@ -64,7 +63,7 @@ public class Pager<T> extends ResultData implements Serializable {
 		return pageNo;
 	}
 
-	public Pager<T> setPageNo(@NonNull final Integer pageNo) {
+	public Pager<T> setPageNo( final Integer pageNo) {
 		this.pageNo = pageNo;
 		return this;
 	}
