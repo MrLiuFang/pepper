@@ -54,21 +54,22 @@ public class PredicateBuilder {
 						}
 					}
 					String searchStr[] = key.split("_");
-					if (searchStr.length != 2) {
+					if (searchStr.length < 2) {
 						continue;
 					}
 					String searchType = searchStr[0];
 					String field = searchStr[1];
-					Path<?> path = null;
+					
+					List<Path<?>> path = new ArrayList<Path<?>>();
 					try{
-						path = root.get(field);
+						for(String str : field.split("&")) {
+							path.add(root.get(str));
+						}
+						
 					}catch (Exception e) {
 						e.printStackTrace();
 					}
-					if (path == null) {
-						continue;
-					} 
-					Predicate predicate = criteriaBuilder(path, path.getJavaType(), searchType, value, criteriaBuilder);
+					Predicate predicate = criteriaBuilder(path, searchType, value, criteriaBuilder);
 					if (predicate != null) {
 						predicates.add(predicate);
 					}
@@ -78,54 +79,71 @@ public class PredicateBuilder {
 		return predicates;
 	}
 
-	private static synchronized Predicate criteriaBuilder(final Path<?> path, Class<?> classz, final String searchType,
+	private static synchronized Predicate criteriaBuilder(final List<Path<?>> path, final String searchType,
 			final Object value, final CriteriaBuilder criteriaBuilder) {
+		if (path == null) {
+			return null;
+		}
 		Predicate predicate = null;
 		switch (searchType.toUpperCase()) {
 		case SearchConstant.EQUAL:
-			if (classz.isEnum()) {
-				predicate = predicateEnum(path,classz,value,criteriaBuilder);
+			if (path.get(0).getJavaType().isEnum()) {
+				predicate = predicateEnum(path.get(0),path.get(0).getJavaType(),value,criteriaBuilder);
 			}else{
-				predicate = criteriaBuilder.equal(path.as(classz), value);
+				predicate = criteriaBuilder.equal(path.get(0).as(path.get(0).getJavaType()), value);
 			}
 			break;
 		case SearchConstant.NOTEQUAL:
-			if (classz.isEnum()) {
-				predicate = predicateEnum(path,classz,value,criteriaBuilder);
+			if (path.get(0).getJavaType().isEnum()) {
+				predicate = predicateEnum(path.get(0),path.get(0).getJavaType(),value,criteriaBuilder);
 			}else{
-				predicate = criteriaBuilder.notEqual(path.as(classz), value);
+				predicate = criteriaBuilder.notEqual(path.get(0).as(path.get(0).getJavaType()), value);
 			}
 			break;
 		case SearchConstant.ISNULL:
-			predicate = criteriaBuilder.isNull(path.as(classz));
+			predicate = criteriaBuilder.isNull(path.get(0).as(path.get(0).getJavaType()));
 			break;
 		case SearchConstant.ISNOTNULL:
-			predicate = criteriaBuilder.isNotNull(path.as(classz));
+			predicate = criteriaBuilder.isNotNull(path.get(0).as(path.get(0).getJavaType()));
 			break;
 		case SearchConstant.NOTIN:
-			CriteriaBuilder.In<Object> notIn = predicateIn(path,classz,value,criteriaBuilder);
+			CriteriaBuilder.In<Object> notIn = predicateIn(path.get(0),path.get(0).getJavaType(),value,criteriaBuilder);
 			predicate = criteriaBuilder.not(notIn);
 			break;
 		case SearchConstant.IN:
-			predicate = predicateIn(path,classz,value,criteriaBuilder);
+			predicate = predicateIn(path.get(0),path.get(0).getJavaType(),value,criteriaBuilder);
 			break;
 		case SearchConstant.LIKE:
-			predicate = criteriaBuilder.like(path.as(String.class), "%" + value + "%");
+			predicate = criteriaBuilder.like(path.get(0).as(String.class), "%" + value + "%");
 			break;
 		case SearchConstant.NOTLIKE:
-			predicate = criteriaBuilder.notLike(path.as(String.class), "%" + value + "%");
+			predicate = criteriaBuilder.notLike(path.get(0).as(String.class), "%" + value + "%");
 			break;
 		case SearchConstant.GE:
-			predicate = predicateNumber(path, searchType, value, criteriaBuilder);
+			predicate = predicateNumber(path.get(0), searchType, value, criteriaBuilder);
 			break;
 		case SearchConstant.GT:
-			predicate = predicateNumber(path, searchType, value, criteriaBuilder);
+			predicate = predicateNumber(path.get(0), searchType, value, criteriaBuilder);
 			break;
 		case SearchConstant.LE:
-			predicate = predicateNumber(path, searchType, value, criteriaBuilder);
+			predicate = predicateNumber(path.get(0), searchType, value, criteriaBuilder);
 			break;
 		case SearchConstant.LT:
-			predicate = predicateNumber(path, searchType, value, criteriaBuilder);
+			predicate = predicateNumber(path.get(0), searchType, value, criteriaBuilder);
+			break;
+		case SearchConstant.OR:
+			List<Predicate> or = new ArrayList<Predicate>();
+			for(Path<?> obj : path) {
+				or.add( criteriaBuilder.or(criteriaBuilder.equal(obj.as(obj.getJavaType()), value)));
+			}
+			predicate = criteriaBuilder.or(or.toArray(new Predicate[or.size()]));
+			break;
+		case SearchConstant.ORLIKE:
+			List<Predicate> orLike = new ArrayList<Predicate>();
+			for(Path<?> obj : path) {
+				orLike.add( criteriaBuilder.or(criteriaBuilder.like(obj.as(String.class), "%" + value + "%")));
+			}
+			predicate = criteriaBuilder.or(orLike.toArray(new Predicate[orLike.size()]));
 			break;
 		default:
 			break;

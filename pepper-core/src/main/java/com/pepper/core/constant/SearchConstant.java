@@ -38,7 +38,7 @@ public class SearchConstant {
 	 * 模糊查询(用于字符串)
 	 */
 	public static final String LIKE = "LIKE";
-	
+		
 	/**
 	 * 模糊查询(用于字符串)
 	 */
@@ -63,4 +63,8 @@ public class SearchConstant {
 	 * 小于等于(用户数字类型)
 	 */
 	public static final String LT = "LT";
+	
+	public static final String OR = "OR";
+	
+	public static final String ORLIKE = "ORLIKE";
 }
