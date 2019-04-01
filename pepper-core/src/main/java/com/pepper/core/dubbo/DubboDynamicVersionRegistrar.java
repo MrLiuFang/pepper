@@ -19,7 +19,6 @@ import org.apache.commons.lang3.RandomUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.apache.dubbo.config.spring.context.annotation.DubboComponentScan;
-import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.reflections.Reflections;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -73,13 +72,8 @@ public class DubboDynamicVersionRegistrar implements ImportBeanDefinitionRegistr
 	@Override
 	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
 		try {
-			AnnotationAttributes attributes = AnnotationAttributes.fromMap(importingClassMetadata.getAnnotationAttributes(DubboComponentScan.class.getName()));
-			Set<String> packagesToScan = getPackagesToScan(attributes,importingClassMetadata,"basePackages","basePackageClasses");
-			attributes = AnnotationAttributes.fromMap(importingClassMetadata.getAnnotationAttributes(SpringBootApplication.class.getName()));
-			packagesToScan.addAll(getPackagesToScan(attributes,importingClassMetadata,"scanBasePackages","scanBasePackageClasses"));
-//			attributes = AnnotationAttributes.fromMap(importingClassMetadata.getAnnotationAttributes(EnableDubbo.class.getName()));
-//			packagesToScan.addAll(getPackagesToScan(attributes,importingClassMetadata,"scanBasePackages","scanBasePackageClasses"));
-			Reflections reflections = new Reflections(convertPackage(packagesToScan));
+			Set<String> packagesToScan = PackagesScanUtil.packagesToScan(importingClassMetadata, registry);
+			Reflections reflections = new Reflections(PackagesScanUtil.convertPackage(packagesToScan));
 			Set<Class<?>> service = reflections.getTypesAnnotatedWith(Service.class);
 			dynamicServiceVersion(service);
 			Set<Class<?>> controller = reflections.getTypesAnnotatedWith(Controller.class);
@@ -149,44 +143,6 @@ public class DubboDynamicVersionRegistrar implements ImportBeanDefinitionRegistr
 			}
 		}
 		return dubboVersion;
-	}
-
-	/**
-	 * 转化package路径
-	 * 
-	 * @param packages
-	 * @return
-	 */
-	private Object[] convertPackage(Set<String> packagesToScan) {
-		List<String> listPackage = new ArrayList<String>();
-		for (String str : packagesToScan) {
-			str = str.replace(".**", "");
-			if (!listPackage.contains(str)) {
-				listPackage.add(str);
-			}
-		}
-		return listPackage.toArray();
-	}
-	
-
-
-	private Set<String> getPackagesToScan(AnnotationAttributes attributes,AnnotationMetadata metadata,String packages, String packageClasses) {
-		String[] basePackages = attributes.getStringArray(packages);
-		Class<?>[] basePackageClasses = attributes.getClassArray(packageClasses);
-		String[] value = {};
-		if(attributes.containsKey("value")){
-			value = attributes.getStringArray("value");
-		}
-		Set<String> packagesToScan =  new LinkedHashSet<String>();
-		packagesToScan = new LinkedHashSet<String>(Arrays.asList(value));
-		packagesToScan.addAll(Arrays.asList(basePackages));
-		for (Class<?> basePackageClass : basePackageClasses) {
-			packagesToScan.add(ClassUtils.getPackageName(basePackageClass));
-		}
-		if (packagesToScan.isEmpty()) {
-			return Collections.singleton(ClassUtils.getPackageName(metadata.getClassName()));
-		}
-		return packagesToScan;
 	}
 
 	@Override
