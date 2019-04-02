@@ -17,6 +17,7 @@ import org.springframework.util.StringUtils;
 
 import com.pepper.core.base.BaseController;
 import com.pepper.core.constant.GlobalConstant;
+import com.pepper.core.dubbo.DubboDynamicVersionRegistrar;
 import com.pepper.core.exception.AuthorizeException;
 import com.pepper.util.LoginTokenUtil;
 import com.pepper.util.SpringContextUtil;
@@ -61,7 +62,9 @@ public abstract class BaseControllerImpl implements BaseController {
 		reference.setApplication(applicationConfig);
 		reference.setRegistry(registryConfig);
 		reference.setInterface("com.pepper.service.redis.string.serializer.ValueOperationsService");
-		reference.setVersion("1.0.0");
+		if(DubboDynamicVersionRegistrar.version.containsKey("com.pepper.service.redis.string.serializer.ValueOperationsService")){
+			reference.setVersion(DubboDynamicVersionRegistrar.version.get("com.pepper.service.redis.string.serializer.ValueOperationsService").get(0));
+		}
 		reference.setGeneric(true); // 声明为泛化接口
 		ReferenceConfigCache cache = ReferenceConfigCache.getCache();
 		GenericService genericService = cache.get(reference);

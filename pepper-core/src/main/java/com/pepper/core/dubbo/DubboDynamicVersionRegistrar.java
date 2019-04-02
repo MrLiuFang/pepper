@@ -5,9 +5,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -18,21 +15,17 @@ import java.util.Set;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.apache.dubbo.config.spring.context.annotation.DubboComponentScan;
 import org.reflections.Reflections;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.Ordered;
-import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.ClassUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
@@ -44,7 +37,7 @@ import org.springframework.util.StringUtils;
  */
 public class DubboDynamicVersionRegistrar implements ImportBeanDefinitionRegistrar, EnvironmentAware ,Ordered{
 	
-	private MultiValueMap<String, String> version = new LinkedMultiValueMap<>();
+	public static final MultiValueMap<String, String> version = new LinkedMultiValueMap<String, String>();
 	
 	private Environment environment;
 	

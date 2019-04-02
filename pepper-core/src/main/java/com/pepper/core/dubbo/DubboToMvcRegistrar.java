@@ -1,6 +1,7 @@
 package com.pepper.core.dubbo;
 
 import java.io.IOException;
+import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,11 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtField;
 import javassist.NotFoundException;
+import javassist.bytecode.AnnotationsAttribute;
+import javassist.bytecode.ClassFile;
+import javassist.bytecode.ConstPool;
+import javassist.bytecode.FieldInfo;
+import javassist.bytecode.annotation.Annotation;
 
 /**
  * 
@@ -55,7 +61,7 @@ public class DubboToMvcRegistrar
 	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
 		String[] packages = PackagesScanUtil
 				.convertPackage(PackagesScanUtil.packagesToScan(importingClassMetadata, registry));
-		List<String> classNameList = searchClassName(packages);
+		List<String> classNameList = new ArrayList<String>();
 		ResourcePatternResolver resolver = ResourcePatternUtils.getResourcePatternResolver(resourceLoader);
 		MetadataReaderFactory metaReader = new CachingMetadataReaderFactory(resourceLoader);
 		Resource[] resources;
@@ -68,85 +74,58 @@ public class DubboToMvcRegistrar
 					classNameList.add(className);
 				}
 			}
-			dubboServiceToMvcService(classNameList);
-			dubboReferenceToMvcAutowired(classNameList);
-			System.out.println("1");
-
-		} catch (IOException | ClassNotFoundException | NotFoundException | CannotCompileException e) {
+			dubboToMvc(classNameList);
+		} catch (IOException | ClassNotFoundException | NotFoundException | CannotCompileException | InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void dubboServiceToMvcService(List<String> classNameList) throws NotFoundException, ClassNotFoundException, CannotCompileException {
-		
+	private void dubboToMvc(List<String> classNameList)
+			throws NotFoundException, ClassNotFoundException, CannotCompileException, IOException, InstantiationException, IllegalAccessException {
+
 		ClassPool pool = ClassPool.getDefault();
-		for(String className : classNameList){
+		ClassLoader loader = this.getClass().getClassLoader();
+		ProtectionDomain domain = this.getClass().getProtectionDomain();
+		for (String className : classNameList) {
 			CtClass ct = pool.get(className);
 			Service service = (Service) ct.getAnnotation(Service.class);
-			if(service != null){
-				System.out.println(className);
-				dubboReferenceToMvcAutowired(ct);
-				ct.toClass();
+			if (service != null) {
+				service = null;
 			}
+			
+			CtField[] fields = ct.getDeclaredFields();
+			for (CtField ctField : fields) {
+				Reference reference = (Reference) ctField.getAnnotation(Reference.class);
+				if (reference != null) {
+					reference = null;
+				}
+			}
+			if(!ct.isAnnotation()&&!ct.isArray()&&!ct.isEnum()&&!ct.isFrozen()&&!ct.isInterface()&&!ct.isModified()&&!ct.isPrimitive()){
+				System.out.println(ct.getName());
+				ct.toBytecode();
+				ct.prune();
+				ct.toClass(loader, domain);
+			}
+			ct.writeFile();
+			
 		}
-//		// 获取需要修改的类
-//		CtClass ct = pool.get("com.tgb.itoo.collection.base.CollectionBase");
-//
-//		// 获取类里的所有方法
-//		CtMethod[] cms = ct.getDeclaredMethods();
-//		CtMethod cm = cms[0];
-//		System.out.println("方法名称====" + cm.getName());
-//
-//		MethodInfo minInfo = cm.getMethodInfo();
-//		// 获取类里的em属性
-//		CtField cf = ct.getField("em");
-//		FieldInfo fieldInfo = cf.getFieldInfo();
-//
-//		System.out.println("属性名称===" + cf.getName());
-//
-//		ConstPool cp = fieldInfo.getConstPool();
-//		// 获取注解信息
-//		AnnotationsAttribute attribute2 = new AnnotationsAttribute(cp, AnnotationsAttribute.visibleTag);
-//		Annotation annotation = new Annotation("javax.persistence.PersistenceContext", cp);
-//
-//		// 修改名称为unitName的注解
-//		annotation.addMemberValue("unitName", new StringMemberValue("basic-entity", cp));
-//		attribute2.setAnnotation(annotation);
-//		minInfo.addAttribute(attribute2);
-//
-//		// 打印修改后方法
-//		Annotation annotation2 = attribute2.getAnnotation("javax.persistence.PersistenceContext");
-//		String text = ((StringMemberValue) annotation2.getMemberValue("unitName")).getValue();
-//
-//		System.out.println("修改后的注解名称===" + text);
 	}
 
-	private void dubboReferenceToMvcAutowired(List<String> classNameList) throws NotFoundException, ClassNotFoundException, CannotCompileException {
-		ClassPool pool = ClassPool.getDefault();
-		for(String className : classNameList){
-			CtClass ct = pool.get(className);
-			Service service = (Service) ct.getAnnotation(Service.class);
-			if( service == null){
-				dubboReferenceToMvcAutowired(ct);
-				ct.toClass();
-			}
-		}
-	}
-	
 	private void dubboReferenceToMvcAutowired(CtClass ct) throws ClassNotFoundException {
 		CtField[] fields = ct.getDeclaredFields();
-		for(CtField  ctField : fields){
-			Reference reference =(Reference) ctField.getAnnotation(Reference.class);
-			if(reference != null){
-				
-			}
+		for (CtField ctField : fields) {
+			Reference reference = (Reference) ctField.getAnnotation(Reference.class);
+//			if (reference != null) {
+//				reference = null;
+//				FieldInfo fieldInfo = ctField.getFieldInfo();
+//				ClassFile ccFile = ct.getClassFile();
+//				ConstPool constpool = ccFile.getConstPool();
+//				AnnotationsAttribute fieldAttr = new AnnotationsAttribute(constpool, AnnotationsAttribute.visibleTag);
+//				Annotation autowired = new Annotation("org.springframework.beans.factory.annotation.Autowired",constpool);
+//				fieldAttr.addAnnotation(autowired);
+//				fieldInfo.addAttribute(fieldAttr);
+//			}
 		}
-	}
-
-	private List<String> searchClassName(final String[] packages) {
-		List<String> classNameList = new ArrayList<String>();
-
-		return classNameList;
 	}
 
 	@Override
