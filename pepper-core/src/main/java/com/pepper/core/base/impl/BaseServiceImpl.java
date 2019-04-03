@@ -1,20 +1,26 @@
 package com.pepper.core.base.impl;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.util.ReflectionUtils;
 
 import com.pepper.core.Pager;
 import com.pepper.core.base.BaseDao;
+import com.pepper.core.base.BaseModel;
 import com.pepper.core.base.BaseService;
+import com.pepper.util.CurrentUserUtil;
 
 /**
  * 
@@ -27,6 +33,9 @@ public abstract class BaseServiceImpl<T>	 implements BaseService<T> {
 
 	@Autowired
 	private BaseDao<T> baseDao;
+	
+	@Autowired
+	private CurrentUserUtil currentUserUtil;
 
 	@Override
 	public List<T> findAll() {
@@ -55,6 +64,7 @@ public abstract class BaseServiceImpl<T>	 implements BaseService<T> {
 
 	@Override
 	public void update(T entity) {
+		setUpdateInfo(entity);
 		baseDao.update(entity);
 	}
 
@@ -102,6 +112,7 @@ public abstract class BaseServiceImpl<T>	 implements BaseService<T> {
 
 	@Override
 	public <S extends T> S save(S entity) {
+		setCreateInfo(entity);
 		return baseDao.save(entity);
 	}
 
@@ -170,5 +181,48 @@ public abstract class BaseServiceImpl<T>	 implements BaseService<T> {
 		return baseDao.findNavigator(pager);
 	}
 	
+	/**
+	 * 设置创建信息
+	 * @param entity
+	 */
+	private void setCreateInfo(final T entity){
+		Class<?> baseModel = entity.getClass().getSuperclass();
+		if(baseModel!=null && baseModel.getName().equals(BaseModel.class.getName())){
+			Object currentUser = currentUserUtil.getCurrentUser();
+			Field createDate = ReflectionUtils.findField(baseModel, "createDate");
+			if(createDate!=null){
+				ReflectionUtils.setField(createDate, entity, new Date());
+			}
+			Field createUser = ReflectionUtils.findField(baseModel, "createUser");
+			if(createUser != null && currentUser != null){
+				Field id = ReflectionUtils.findField(currentUser.getClass(), "id");
+				if(id != null){
+					ReflectionUtils.setField(createUser, entity, ReflectionUtils.getField(id, currentUser));
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 设置更新信息
+	 * @param entity
+	 */
+	private void setUpdateInfo(final T entity){
+		Class<?> baseModel = entity.getClass().getSuperclass();
+		if(baseModel!=null && baseModel.getName().equals(BaseModel.class.getName())){
+			Object currentUser = currentUserUtil.getCurrentUser();
+			Field updateDate = ReflectionUtils.findField(baseModel, "updateDate");
+			if(updateDate!=null){
+				ReflectionUtils.setField(updateDate, entity, new Date());
+			}
+			Field updateUser = ReflectionUtils.findField(baseModel, "updateUser");
+			if(updateUser != null && currentUser != null){
+				Field id = ReflectionUtils.findField(currentUser.getClass(), "id");
+				if(id != null){
+					ReflectionUtils.setField(updateUser, entity, ReflectionUtils.getField(id, currentUser));
+				}
+			}
+		}
+	}
 
 }

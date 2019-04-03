@@ -24,6 +24,7 @@ import com.pepper.core.base.BaseService;
 import com.pepper.core.constant.GlobalConstant;
 import com.pepper.core.dubbo.DubboDynamicVersionRegistrar;
 import com.pepper.core.exception.AuthorizeException;
+import com.pepper.util.CurrentUserUtil;
 import com.pepper.util.LoginTokenUtil;
 import com.pepper.util.SpringContextUtil;
 
@@ -42,11 +43,8 @@ public abstract class BaseControllerImpl implements BaseController{
 	@Autowired
 	protected HttpServletResponse response;
 	
-	@Resource
-	private ApplicationConfig applicationConfig;
-	
-	@Resource
-	private RegistryConfig registryConfig;
+	@Autowired
+	private CurrentUserUtil currentUserUtil;
 	
 	@Override
 	public String getCookie(String name) {
@@ -63,38 +61,7 @@ public abstract class BaseControllerImpl implements BaseController{
 
 	@Override
 	public Object getCurrentUser() {
-		ReferenceConfig<GenericService> reference = new ReferenceConfig<GenericService>();
-		reference.setApplication(applicationConfig);
-		reference.setRegistry(registryConfig);
-		reference.setInterface("com.pepper.service.redis.string.serializer.ValueOperationsService");
-		if(DubboDynamicVersionRegistrar.version.containsKey("com.pepper.service.redis.string.serializer.ValueOperationsService")){
-			reference.setVersion(DubboDynamicVersionRegistrar.version.get("com.pepper.service.redis.string.serializer.ValueOperationsService").get(0));
-		}
-		reference.setGeneric(true); // 声明为泛化接口
-		ReferenceConfigCache cache = ReferenceConfigCache.getCache();
-		GenericService genericService = cache.get(reference);
-		String token = LoginTokenUtil.getLoginToken(GlobalConstant.AUTHORIZE_TOKEN);
-		if(token==null || !StringUtils.hasText(token.toString())){
-			return null;
-		}
-		// 基本类型以及Date,List,Map等不需要转换，直接调用
-		Object scope = genericService.$invoke("get", new String[] { Object.class.getName() },new Object[] { token + GlobalConstant.AUTHORIZE_TOKEN_SCOPE });
-		if (scope==null || !StringUtils.hasText(scope.toString())) {
-			return null;
-		}
-		Object authorizeFactory = SpringContextUtil.getBean("authorizeFactoryBean");
-		try {
-			Method getAuthorize = authorizeFactory.getClass().getMethod("getAuthorize",String.class);
-			Object IAuthorize = getAuthorize.invoke(authorizeFactory,String.valueOf(scope));
-			Method getCurrentUser = IAuthorize.getClass().getMethod("getCurrentUser",String.class);
-			Object user = getCurrentUser.invoke(IAuthorize,token);
-			if(user == null){
-				throw new AuthorizeException("登录超时!请重新登录!");
-			}
-			return user;
-		} catch (Exception e) {
-			throw new AuthorizeException("登录超时!请重新登录!");
-		}
+		return currentUserUtil.getCurrentUser();
 	}
 
 }
