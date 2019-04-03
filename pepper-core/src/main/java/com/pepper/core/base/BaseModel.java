@@ -10,9 +10,9 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.validator.constraints.Length;
 
 import com.pepper.core.validator.Validator.Delete;
 import com.pepper.core.validator.Validator.Update;
@@ -30,7 +30,7 @@ public class BaseModel implements Serializable{
 	@GenericGenerator(name = "uuid", strategy = "uuid")
 	@Column(name = "id", length = 32)
 	@NotBlank(message="ID不能为空",groups= {Update.class,Delete.class})
-	@Length(min=32,max=32,message="ID为{max}个字符",groups= {Update.class,Delete.class})
+	@Size(min=32,max=32,message="ID为{max}个字符",groups= {Update.class,Delete.class})
 	protected String id;
 
 	@Column(name = "create_date", updatable = false)
