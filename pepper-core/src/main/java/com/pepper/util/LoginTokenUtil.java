@@ -4,6 +4,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -14,9 +15,16 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  */
 public class LoginTokenUtil {
 
-	public synchronized static String getLoginToken(String tokenName) {
+	public synchronized static String getLoginToken(final String tokenName) {
 		String token =null;
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+		if(requestAttributes == null) {
+			return null;
+		}
+		HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
+		if(request == null) {
+			return null;
+		}
 		Cookie[] cookies = request.getCookies();
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {

@@ -118,10 +118,18 @@ public abstract class BaseServiceImpl<T>	 implements BaseService<T> {
 
 	@Override
 	public T findById(Serializable id) {
-		Optional<T> optional =  baseDao.findById(id);
-		if(optional.isPresent()) {
-			return optional.get();
-		}else {
+		try {
+			if(existsById(id)) {
+				Optional<T> optional =  baseDao.findById(id);
+				if(optional.isPresent()) {
+					return optional.get();
+				}else {
+					return null;
+				}
+			}else {
+				return null;
+			}
+		}catch (Exception e) {
 			return null;
 		}
 	}
@@ -138,7 +146,12 @@ public abstract class BaseServiceImpl<T>	 implements BaseService<T> {
 
 	@Override
 	public void deleteById(Serializable id) {
-		baseDao.deleteById(id);
+		try {
+			if(existsById(id)) {
+				baseDao.deleteById(id);
+			}
+		}catch (Exception e) {
+		}
 	}
 
 	@Override
@@ -191,13 +204,20 @@ public abstract class BaseServiceImpl<T>	 implements BaseService<T> {
 			Object user = currentUser.getCurrentUser();
 			Field createDate = ReflectionUtils.findField(baseModel, "createDate");
 			if(createDate!=null){
+				createDate.setAccessible(true);
 				ReflectionUtils.setField(createDate, entity, new Date());
+				createDate.setAccessible(false);
 			}
 			Field createUser = ReflectionUtils.findField(baseModel, "createUser");
 			if(createUser != null && user != null){
 				Field id = ReflectionUtils.findField(user.getClass(), "id");
 				if(id != null){
 					ReflectionUtils.setField(createUser, entity, ReflectionUtils.getField(id, user));
+					id.setAccessible(true);
+					createUser.setAccessible(true);
+					ReflectionUtils.setField(createUser, entity, ReflectionUtils.getField(id, currentUser));
+					createUser.setAccessible(false);
+					id.setAccessible(false);
 				}
 			}
 		}
@@ -213,13 +233,20 @@ public abstract class BaseServiceImpl<T>	 implements BaseService<T> {
 			Object user = currentUser.getCurrentUser();
 			Field updateDate = ReflectionUtils.findField(baseModel, "updateDate");
 			if(updateDate!=null){
+				updateDate.setAccessible(true);
 				ReflectionUtils.setField(updateDate, entity, new Date());
+				updateDate.setAccessible(false);
 			}
 			Field updateUser = ReflectionUtils.findField(baseModel, "updateUser");
 			if(updateUser != null && user != null){
 				Field id = ReflectionUtils.findField(user.getClass(), "id");
 				if(id != null){
 					ReflectionUtils.setField(updateUser, entity, ReflectionUtils.getField(id, user));
+					id.setAccessible(true);
+					updateUser.setAccessible(true);
+					ReflectionUtils.setField(updateUser, entity, ReflectionUtils.getField(id, currentUser));
+					updateUser.setAccessible(false);
+					id.setAccessible(false);
 				}
 			}
 		}
