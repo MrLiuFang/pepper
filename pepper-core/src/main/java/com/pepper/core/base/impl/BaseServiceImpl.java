@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -20,7 +20,7 @@ import com.pepper.core.Pager;
 import com.pepper.core.base.BaseDao;
 import com.pepper.core.base.BaseModel;
 import com.pepper.core.base.BaseService;
-import com.pepper.util.CurrentUserUtil;
+import com.pepper.core.base.ICurrentUser;
 
 /**
  * 
@@ -34,8 +34,8 @@ public abstract class BaseServiceImpl<T>	 implements BaseService<T> {
 	@Autowired
 	private BaseDao<T> baseDao;
 	
-	@Autowired
-	private CurrentUserUtil currentUserUtil;
+	@Resource
+	private ICurrentUser currentUser;
 
 	@Override
 	public List<T> findAll() {
@@ -188,16 +188,16 @@ public abstract class BaseServiceImpl<T>	 implements BaseService<T> {
 	private void setCreateInfo(final T entity){
 		Class<?> baseModel = entity.getClass().getSuperclass();
 		if(baseModel!=null && baseModel.getName().equals(BaseModel.class.getName())){
-			Object currentUser = currentUserUtil.getCurrentUser();
+			Object user = currentUser.getCurrentUser();
 			Field createDate = ReflectionUtils.findField(baseModel, "createDate");
 			if(createDate!=null){
 				ReflectionUtils.setField(createDate, entity, new Date());
 			}
 			Field createUser = ReflectionUtils.findField(baseModel, "createUser");
-			if(createUser != null && currentUser != null){
-				Field id = ReflectionUtils.findField(currentUser.getClass(), "id");
+			if(createUser != null && user != null){
+				Field id = ReflectionUtils.findField(user.getClass(), "id");
 				if(id != null){
-					ReflectionUtils.setField(createUser, entity, ReflectionUtils.getField(id, currentUser));
+					ReflectionUtils.setField(createUser, entity, ReflectionUtils.getField(id, user));
 				}
 			}
 		}
@@ -210,16 +210,16 @@ public abstract class BaseServiceImpl<T>	 implements BaseService<T> {
 	private void setUpdateInfo(final T entity){
 		Class<?> baseModel = entity.getClass().getSuperclass();
 		if(baseModel!=null && baseModel.getName().equals(BaseModel.class.getName())){
-			Object currentUser = currentUserUtil.getCurrentUser();
+			Object user = currentUser.getCurrentUser();
 			Field updateDate = ReflectionUtils.findField(baseModel, "updateDate");
 			if(updateDate!=null){
 				ReflectionUtils.setField(updateDate, entity, new Date());
 			}
 			Field updateUser = ReflectionUtils.findField(baseModel, "updateUser");
-			if(updateUser != null && currentUser != null){
-				Field id = ReflectionUtils.findField(currentUser.getClass(), "id");
+			if(updateUser != null && user != null){
+				Field id = ReflectionUtils.findField(user.getClass(), "id");
 				if(id != null){
-					ReflectionUtils.setField(updateUser, entity, ReflectionUtils.getField(id, currentUser));
+					ReflectionUtils.setField(updateUser, entity, ReflectionUtils.getField(id, user));
 				}
 			}
 		}
