@@ -212,10 +212,9 @@ public abstract class BaseServiceImpl<T>	 implements BaseService<T> {
 			if(createUser != null && user != null){
 				Field id = ReflectionUtils.findField(user.getClass(), "id");
 				if(id != null){
-					ReflectionUtils.setField(createUser, entity, ReflectionUtils.getField(id, user));
 					id.setAccessible(true);
 					createUser.setAccessible(true);
-					ReflectionUtils.setField(createUser, entity, ReflectionUtils.getField(id, currentUser));
+					ReflectionUtils.setField(createUser, entity, ReflectionUtils.getField(id, user));
 					createUser.setAccessible(false);
 					id.setAccessible(false);
 				}
@@ -241,10 +240,9 @@ public abstract class BaseServiceImpl<T>	 implements BaseService<T> {
 			if(updateUser != null && user != null){
 				Field id = ReflectionUtils.findField(user.getClass(), "id");
 				if(id != null){
-					ReflectionUtils.setField(updateUser, entity, ReflectionUtils.getField(id, user));
 					id.setAccessible(true);
 					updateUser.setAccessible(true);
-					ReflectionUtils.setField(updateUser, entity, ReflectionUtils.getField(id, currentUser));
+					ReflectionUtils.setField(updateUser, entity, ReflectionUtils.getField(id, user));
 					updateUser.setAccessible(false);
 					id.setAccessible(false);
 				}
