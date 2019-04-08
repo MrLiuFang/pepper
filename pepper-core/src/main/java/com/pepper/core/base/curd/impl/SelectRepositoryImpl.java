@@ -1,7 +1,6 @@
 package com.pepper.core.base.curd.impl;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
