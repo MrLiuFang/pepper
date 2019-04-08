@@ -62,7 +62,7 @@ public interface SelectRepository<T> {
 	 * @return T
 	 */
 	@Transactional(readOnly=true)
-	List<T> find(final String jpql,final Map<String, Object> parameter);
+	List<T> find(final String jpql,final Map<String, Object> searchParameter);
 
 	/**
 	 * 使用jpql语句查询
@@ -72,7 +72,7 @@ public interface SelectRepository<T> {
 	 * @return T
 	 */
 	@Transactional(readOnly=true)
-	List<Map<String, Object>> findToMap(final String jpql, final Map<String, Object> parameter);
+	List<Map<String, Object>> findToMap(final String jpql, final Map<String, Object> searchParameter);
 
 	/**
 	 * 使用jpql语句查询返回单个Map对象
@@ -82,7 +82,7 @@ public interface SelectRepository<T> {
 	 * @return T
 	 */
 	@Transactional(readOnly=true)
-	Map<String, Object> findOneToMap(final String jpql, final Map<String, Object> parameter);
+	Map<String, Object> findOneToMap(final String jpql, final Map<String, Object> searchParameter);
 	
 	/**
 	 * 分页查询(Pager中的searchParameter&sortParameter将不生效)
@@ -99,7 +99,7 @@ public interface SelectRepository<T> {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	Pager<T> findNavigator(final Pager<T> pager,final String jpql, final Map<String, Object> parameter);
+	Pager<T> findNavigator(final Pager<T> pager,final String jpql, final Map<String, Object> searchParameter);
 	
 	
 	/**
@@ -128,7 +128,7 @@ public interface SelectRepository<T> {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	Pager<Map<String, Object>> findNavigatorToMap(final Pager<Map<String, Object>> pager,final String jpql,final Map<String, Object> parameter);
+	Pager<Map<String, Object>> findNavigatorToMap(final Pager<Map<String, Object>> pager,final String jpql,final Map<String, Object> searchParameter);
 	
 	/**
 	 * 
