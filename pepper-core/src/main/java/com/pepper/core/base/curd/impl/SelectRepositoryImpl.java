@@ -1,6 +1,7 @@
 package com.pepper.core.base.curd.impl;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.hibernate.Session;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.hql.internal.ast.QueryTranslatorImpl;
+import org.hibernate.param.NamedParameterSpecification;
+import org.hibernate.param.ParameterSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,19 +33,21 @@ import com.pepper.core.base.curd.SortBuilder;
 
 /**
  * 为兼容其它数据库所有操作均不提供本地sql封装，均采用jpql操作！
+ * 
  * @author mrliu
  *
  * @param <T>
  */
 public class SelectRepositoryImpl<T> implements SelectRepository<T> {
-	
+
 	private EntityManager entityManager;
 
 	private Class<T> clazz;
-	
+
 	private SimpleJpaRepository<T, Serializable> simpleJpaRepository;
 
-	public SelectRepositoryImpl(EntityManager entityManager, Class<T> clazz ,SimpleJpaRepository<T, Serializable> simpleJpaRepository) {
+	public SelectRepositoryImpl(EntityManager entityManager, Class<T> clazz,
+			SimpleJpaRepository<T, Serializable> simpleJpaRepository) {
 		super();
 		this.entityManager = entityManager;
 		this.clazz = clazz;
@@ -48,14 +56,14 @@ public class SelectRepositoryImpl<T> implements SelectRepository<T> {
 
 	@Override
 	public List<T> find(final String jpql) {
-		TypedQuery<T> query = entityManager.createQuery(jpql,clazz);
+		TypedQuery<T> query = entityManager.createQuery(jpql, clazz);
 		return query.getResultList();
 	}
 
 	@Override
 	public T findOne(final String jpql) {
 		List<T> list = find(jpql);
-		if(list!=null && list.size()>0){
+		if (list != null && list.size() > 0) {
 			return list.get(0);
 		}
 		return null;
@@ -70,8 +78,8 @@ public class SelectRepositoryImpl<T> implements SelectRepository<T> {
 
 	@Override
 	public Map<String, Object> findOneToMap(final String jpql) {
-		List<Map<String,Object>> list = findToMap(jpql);
-		if(list != null && list.size()>0){
+		List<Map<String, Object>> list = findToMap(jpql);
+		if (list != null && list.size() > 0) {
 			return list.get(0);
 		}
 		return null;
@@ -87,19 +95,19 @@ public class SelectRepositoryImpl<T> implements SelectRepository<T> {
 
 	@SuppressWarnings({ "unchecked" })
 	@Override
-	public List<Map<String, Object>> findToMap(final String jpql,final Map<String, Object> parameter) {
+	public List<Map<String, Object>> findToMap(final String jpql, final Map<String, Object> searchParameter) {
 		Query query = entityManager.createQuery(jpql);
-		RepositoryParameter.setParameter(query, parameter);
+		RepositoryParameter.setParameter(query, searchParameter);
 		return query.getResultList();
 	}
 
 	@Override
-	public Map<String, Object> findOneToMap(final String jpql,final Map<String, Object> parameter) {
-		List<Map<String, Object>> list = findToMap(jpql,parameter);
-		if(list !=null && list.size()>0){
+	public Map<String, Object> findOneToMap(final String jpql, final Map<String, Object> searchParameter) {
+		List<Map<String, Object>> list = findToMap(jpql, searchParameter);
+		if (list != null && list.size() > 0) {
 			return list.get(0);
 		}
-		return null;
+		return new HashMap<String,Object>();
 	}
 
 	@Override
@@ -107,17 +115,20 @@ public class SelectRepositoryImpl<T> implements SelectRepository<T> {
 		return findNavigator(pager, jpql, null);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Pager<T> findNavigator(final Pager<T> pager,final String jpql,final Map<String, Object> parameter) {
-		pager.setData(executejpql(pager, jpql, parameter));
-		pager.setTotalRow(getCount(jpql, parameter));
+	public Pager<T> findNavigator(final Pager<T> pager, final String jpql, final Map<String, Object> searchParameter) {
+		List<T> list = (List<T>) executeJpql(pager, jpql, searchParameter);
+		pager.setResults(list);
+		pager.setTotalRow(getCount(jpql, searchParameter));
 		return pager;
 	}
 
 	@Override
 	public Pager<T> findNavigator(final Pager<T> pager) {
-		Page<T> page = findAll(pager.getPageSize(),pager.getPageNo(),pager.getJpqlParameter().getSearchParameter(),pager.getJpqlParameter().getSortParameter());
-		pageConvertPager(page,pager);
+		Page<T> page = findAll(pager.getPageSize(), pager.getPageNo(), pager.getJpqlParameter().getSearchParameter(),
+				pager.getJpqlParameter().getSortParameter());
+		pageConvertPager(page, pager);
 		return pager;
 	}
 
@@ -126,42 +137,53 @@ public class SelectRepositoryImpl<T> implements SelectRepository<T> {
 		return findNavigatorToMap(pager, jpql, null);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Pager<Map<String, Object>> findNavigatorToMap(final Pager<Map<String, Object>> pager, final String jpql,final Map<String, Object> parameter) {
-		pager.setData(executejpql(pager, jpql, parameter));
-		pager.setTotalRow(getCount(jpql, parameter));
+	public Pager<Map<String, Object>> findNavigatorToMap(final Pager<Map<String, Object>> pager, final String jpql,
+			final Map<String, Object> searchParameter) {
+		pager.setResults((List<Map<String, Object>>) executeJpql(pager, jpql, searchParameter));
+		pager.setTotalRow(getCount(jpql, searchParameter));
 		return pager;
 	}
-	
+
 	/**
 	 * 分页查询
+	 * 
 	 * @param pager
 	 * @param jpql
 	 * @param parameter
 	 * @return
 	 */
-	private List<?> executejpql(final Pager<?> pager, final String jpql, final Map<String, Object> parameter){
+	private List<?> executeJpql(final Pager<?> pager, final String jpql, final Map<String, Object> searchParameter) {
 		Query query = entityManager.createQuery(jpql);
-		RepositoryParameter.setParameter(query, parameter);
-		query.setFirstResult(pager.getPageNo()*pager.getPageSize());
+		RepositoryParameter.setParameter(query, searchParameter);
+		query.setFirstResult(pager.getPageNo()-1);
 		query.setMaxResults(pager.getPageSize());
 		return query.getResultList();
 	}
-	
+
 	/**
 	 * 查询总行数
+	 * 
 	 * @param jpql
 	 * @param parameter
 	 * @return
 	 */
-	private Long getCount(final String jpql,final Map<String, Object> parameter){
-		StringBuffer countjpql = new StringBuffer();
-		countjpql.append(" select count(1) from ( ");
-		countjpql.append( jpql );
-		countjpql.append(" ) tb ");
-		Query query = entityManager.createQuery(countjpql.toString());
-		RepositoryParameter.setParameter(query, parameter);
-		return (Long) query.getSingleResult();
+	private Long getCount(final String jpql, final Map<String, Object> searchParameter) {
+		SessionFactoryImplementor sessionFactoryImplementor = (SessionFactoryImplementor)entityManager.unwrap(Session.class).getSessionFactory();
+		QueryTranslatorImpl queryTranslator=new QueryTranslatorImpl(jpql,jpql,searchParameter,sessionFactoryImplementor);
+		queryTranslator.compile(searchParameter, false);
+		String sql = queryTranslator.getSQLString();
+		List<ParameterSpecification> parameter = queryTranslator.getCollectedParameterSpecifications();
+		StringBuffer countSql = new StringBuffer();
+		countSql.append(" select count(1) from (");
+		countSql.append(sql);
+		countSql.append(") tb");
+		Query query = entityManager.createNativeQuery(countSql.toString());
+		for(int i =1; i<=parameter.size(); i++){
+			query.setParameter(i, searchParameter.get(((NamedParameterSpecification)parameter.get(i-1)).getName()));
+		}
+		return Long.valueOf(query.getSingleResult().toString());
 	}
 
 	/**
@@ -170,7 +192,7 @@ public class SelectRepositoryImpl<T> implements SelectRepository<T> {
 	 * @param pager
 	 * @return
 	 */
-	private Pager<T> pageConvertPager(final Page<T> page,final Pager<T> pager){
+	private Pager<T> pageConvertPager(final Page<T> page, final Pager<T> pager) {
 		pager.setResults(page.getContent());
 		pager.setTotalRow(Long.valueOf(page.getTotalElements()));
 		return pager;
@@ -183,26 +205,26 @@ public class SelectRepositoryImpl<T> implements SelectRepository<T> {
 
 	@Override
 	public List<T> findAll(final Map<String, Object> searchParameter, final Map<String, Object> sortParameter) {
-		return findAll(Integer.MAX_VALUE,1,searchParameter,sortParameter).getContent();
+		return findAll(Integer.MAX_VALUE, 1, searchParameter, sortParameter).getContent();
 	}
-	
-	private Page<T> findAll(final Integer pageSize,final Integer pageNo,final Map<String, Object> searchParameter,final Map<String, Object> sortParameter) {
+
+	private Page<T> findAll(final Integer pageSize, final Integer pageNo, final Map<String, Object> searchParameter,
+			final Map<String, Object> sortParameter) {
 		Specification<T> specification = new Specification<T>() {
 			private static final long serialVersionUID = 1L;
+
 			@Override
 			public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-				//动态构建where条件
-				List<Predicate> list = PredicateBuilder.builder(root, criteriaBuilder,searchParameter);
+				// 动态构建where条件
+				List<Predicate> list = PredicateBuilder.builder(root, criteriaBuilder, searchParameter);
 				return criteriaBuilder.and(list.toArray(new Predicate[list.size()]));
 			}
 		};
-		//构建排序
+		// 构建排序
 		Sort sort = SortBuilder.builder(sortParameter);
-		Pageable pageable = PageRequest.of(pageNo - 1, pageSize,sort);
-		Page<T> page = simpleJpaRepository.findAll(specification,pageable);
+		Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
+		Page<T> page = simpleJpaRepository.findAll(specification, pageable);
 		return page;
 	}
-	
-	
-	
+
 }
