@@ -79,9 +79,9 @@ public class SelectRepositoryImpl<T> implements SelectRepository<T> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<T> find(final String jpql,final Map<String, Object> parameter) {
+	public List<T> find(final String jpql,final Map<String, Object> searchParameter) {
 		Query query = entityManager.createQuery(jpql);
-		RepositoryParameter.setParameter(query, parameter);
+		RepositoryParameter.setParameter(query, searchParameter);
 		return query.getResultList();
 	}
 
