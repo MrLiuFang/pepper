@@ -46,14 +46,14 @@ public class ExceptionData {
 			HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
 			response.setStatus(200);
 			if (e instanceof AuthorizeException) {
-				return returnView(returnType,"forward:/notLogin",e.getMessage());
+				return returnView(returnType,"redirect:/notLogin",e.getMessage());
 			} else if (e instanceof NoPermissionException) {
-				return returnView(returnType,"forward:/noPermission",e.getMessage());
+				return returnView(returnType,"redirect:/noPermission",e.getMessage());
 			} else if (e instanceof BusinessException) {
-				return returnView(returnType,"forward:/500",e.getMessage());
+				return returnView(returnType,"redirect:/500",e.getMessage());
 			} else {
 				e.printStackTrace();
-				return returnView(returnType,"forward:/500",e.getMessage());
+				return returnView(returnType,"redirect:/500",e.getMessage());
 			}
 		} else {
 			throw new RuntimeException(e.getMessage(),e);

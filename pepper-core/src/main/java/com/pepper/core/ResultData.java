@@ -47,7 +47,6 @@ public class ResultData implements Serializable {
 	 */
 	private String loadUrl;
 	
-	private Integer code = 200;
 
 	/**
 	 * 结果集
@@ -110,14 +109,5 @@ public class ResultData implements Serializable {
 	public void setLoadUrl(String loadUrl) {
 		this.loadUrl = loadUrl;
 	}
-
-	public Integer getCode() {
-		return code;
-	}
-
-	public void setCode(Integer code) {
-		this.code = code;
-	}
-
 	
 }
