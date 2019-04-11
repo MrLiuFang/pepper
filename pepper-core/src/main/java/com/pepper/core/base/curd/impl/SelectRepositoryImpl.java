@@ -1,6 +1,7 @@
 package com.pepper.core.base.curd.impl;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -171,8 +172,8 @@ public class SelectRepositoryImpl<T> implements SelectRepository<T> {
 	 */
 	private Long getCount(final String jpql, final Map<String, Object> searchParameter) {
 		SessionFactoryImplementor sessionFactoryImplementor = (SessionFactoryImplementor)entityManager.unwrap(Session.class).getSessionFactory();
-		QueryTranslatorImpl queryTranslator=new QueryTranslatorImpl(jpql,jpql,searchParameter,sessionFactoryImplementor);
-		queryTranslator.compile(searchParameter==null?new HashMap<String,Object>():searchParameter, true);
+		QueryTranslatorImpl queryTranslator=new QueryTranslatorImpl(jpql,jpql,searchParameter==null?Collections.EMPTY_MAP:searchParameter,sessionFactoryImplementor);
+		queryTranslator.compile(searchParameter==null?Collections.EMPTY_MAP:searchParameter, true);
 		String sql = queryTranslator.getSQLString();
 		List<ParameterSpecification> parameter = queryTranslator.getCollectedParameterSpecifications();
 		StringBuffer countSql = new StringBuffer();
