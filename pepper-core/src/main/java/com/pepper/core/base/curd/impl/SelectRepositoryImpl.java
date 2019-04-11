@@ -172,7 +172,7 @@ public class SelectRepositoryImpl<T> implements SelectRepository<T> {
 	private Long getCount(final String jpql, final Map<String, Object> searchParameter) {
 		SessionFactoryImplementor sessionFactoryImplementor = (SessionFactoryImplementor)entityManager.unwrap(Session.class).getSessionFactory();
 		QueryTranslatorImpl queryTranslator=new QueryTranslatorImpl(jpql,jpql,searchParameter,sessionFactoryImplementor);
-		queryTranslator.compile(searchParameter, false);
+		queryTranslator.compile(searchParameter==null?new HashMap<String,Object>():searchParameter, true);
 		String sql = queryTranslator.getSQLString();
 		List<ParameterSpecification> parameter = queryTranslator.getCollectedParameterSpecifications();
 		StringBuffer countSql = new StringBuffer();
