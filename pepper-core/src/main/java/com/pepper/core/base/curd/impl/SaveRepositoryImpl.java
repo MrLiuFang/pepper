@@ -5,9 +5,6 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.pepper.core.base.curd.RepositoryParameter;
 import com.pepper.core.base.curd.SaveRepository;
 
