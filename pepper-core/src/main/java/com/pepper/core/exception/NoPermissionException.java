@@ -6,11 +6,12 @@ package com.pepper.core.exception;
  * @author mrliu
  *
  */
-public class NoPermissionException extends HandleableException {
+public class NoPermissionException extends RuntimeException {
 
 	private static final long serialVersionUID = 4645560315083250463L;
 
 	public NoPermissionException(String message) {
 		super(message);
+		throw this;
 	}
 }

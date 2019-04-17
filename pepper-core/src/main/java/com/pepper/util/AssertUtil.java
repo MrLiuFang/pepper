@@ -37,10 +37,10 @@ public class AssertUtil {
 	 */
 	public static void maxLength(final String str,final int maxLength,final String message) {
 		if (!StringUtils.hasText(str)) {
-			throw new BusinessException("参数不允许为空.");
+			new BusinessException("参数不允许为空.");
 		}
 		if (str.length() > maxLength) {
-			throw new BusinessException(message);
+			new BusinessException(message);
 		}
 	}
 
@@ -55,11 +55,11 @@ public class AssertUtil {
 	 */
 	public static void assertFieldName(final String fieldName,final String message) {
 		if (!StringUtils.hasText(fieldName)) {
-			throw new BusinessException(message);
+			new BusinessException(message);
 		}
 		final boolean isFieldName = fieldName.matches("^[a-zA-Z]+$");
 		if (!isFieldName) {
-			throw new BusinessException(message);
+			new BusinessException(message);
 		}
 	}
 
@@ -73,7 +73,7 @@ public class AssertUtil {
 	 */
 	public static void notNull(final Object obj,final String message) {
 		if (obj == null) {
-			throw new BusinessException(message);
+			new BusinessException(message);
 		}
 	}
 
@@ -87,7 +87,7 @@ public class AssertUtil {
 	 */
 	public static void notEmpty(final String str,final String message) {
 		if (!StringUtils.hasText(str)) {
-			throw new BusinessException(message);
+			new BusinessException(message);
 		}
 	}
 
@@ -103,7 +103,7 @@ public class AssertUtil {
 	 */
 	public static void notEmpty(final Set<?> set,final String message) {
 		if (set == null || set.isEmpty()) {
-			throw new BusinessException(message);
+			new BusinessException(message);
 		}
 	}
 
@@ -117,7 +117,7 @@ public class AssertUtil {
 	 */
 	public static void greatZero(final Integer num,final String message) {
 		if (num == null || num <= 0) {
-			throw new BusinessException(message);
+			new BusinessException(message);
 		}
 	}
 
@@ -132,7 +132,7 @@ public class AssertUtil {
 
 	public static void greatZero(final Long num,final String message) {
 		if (num == null || num <= 0) {
-			throw new BusinessException(message);
+			new BusinessException(message);
 		}
 	}
 
@@ -148,7 +148,7 @@ public class AssertUtil {
 	 */
 	public static void equals(final int num1,final int num2,final String message) {
 		if (num1 != num2) {
-			throw new BusinessException(message);
+			new BusinessException(message);
 		}
 	}
 
@@ -164,7 +164,7 @@ public class AssertUtil {
 	 */
 	public static void equalsIgnoreCase(final String str1,final String str2,final String message) {
 		if (!str1.equalsIgnoreCase(str2)) {
-			throw new BusinessException(message);
+			new BusinessException(message);
 		}
 	}
 
@@ -185,7 +185,7 @@ public class AssertUtil {
 			b = m.matches();
 		}
 		if (!b) {
-			throw new BusinessException(message);
+			new BusinessException(message);
 		}
 	}
 
@@ -200,7 +200,7 @@ public class AssertUtil {
 
 	public static void assertTrue(final boolean flag,final String message) {
 		if (!flag) {
-			throw new BusinessException(message);
+			new BusinessException(message);
 		}
 	}
 }
