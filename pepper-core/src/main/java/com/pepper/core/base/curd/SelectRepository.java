@@ -3,6 +3,8 @@ package com.pepper.core.base.curd;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.constraints.NotNull;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pepper.core.Pager;
@@ -99,7 +101,7 @@ public interface SelectRepository<T> {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	Pager<T> findNavigator(final Pager<T> pager,final String jpql, final Map<String, Object> searchParameter);
+	Pager<T> findNavigator(final Pager<T> pager,final String jpql,final Map<String, Object> searchParameter);
 	
 	
 	/**

@@ -52,7 +52,7 @@ public class ResultData implements Serializable {
 	 * 结果集
 	 */
 	private Map<String, Object> data = new HashMap<String, Object>();
-
+	
 	public Map<String, Object> getData() {
 		return data;
 	}
