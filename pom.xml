@@ -57,11 +57,17 @@
 		<zookeeper.version>3.5.4-beta</zookeeper.version>
 		<kaptcha.version>2.3.2</kaptcha.version>
 		<fescar.version>0.4.2</fescar.version>
+		<jsoup.version>1.11.3</jsoup.version>
 	</properties>
 
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+			    <groupId>org.jsoup</groupId>
+			    <artifactId>jsoup</artifactId>
+			    <version>${jsoup.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>com.alibaba.fescar</groupId>
 				<artifactId>fescar-dubbo</artifactId>
