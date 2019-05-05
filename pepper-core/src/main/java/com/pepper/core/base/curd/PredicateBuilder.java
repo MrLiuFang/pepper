@@ -47,32 +47,26 @@ public class PredicateBuilder {
 			String key = entry.getKey();
 			Object value = entry.getValue();
 			if (StringUtils.hasText(key)) {
-				if (value != null) {
-					if(value instanceof  String){
-						if(!StringUtils.hasLength(value.toString())){
-							continue;
-						}
+				
+				String searchStr[] = key.split("_");
+				if (searchStr.length < 2) {
+					continue;
+				}
+				String searchType = searchStr[0];
+				String field = searchStr[1];
+				
+				List<Path<?>> path = new ArrayList<Path<?>>();
+				try{
+					for(String str : field.split("&")) {
+						path.add(root.get(str));
 					}
-					String searchStr[] = key.split("_");
-					if (searchStr.length < 2) {
-						continue;
-					}
-					String searchType = searchStr[0];
-					String field = searchStr[1];
 					
-					List<Path<?>> path = new ArrayList<Path<?>>();
-					try{
-						for(String str : field.split("&")) {
-							path.add(root.get(str));
-						}
-						
-					}catch (Exception e) {
-						e.printStackTrace();
-					}
-					Predicate predicate = criteriaBuilder(path, searchType, value, criteriaBuilder);
-					if (predicate != null) {
-						predicates.add(predicate);
-					}
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+				Predicate predicate = criteriaBuilder(path, searchType, value, criteriaBuilder);
+				if (predicate != null) {
+					predicates.add(predicate);
 				}
 			}
 		}
