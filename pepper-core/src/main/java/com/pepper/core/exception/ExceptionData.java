@@ -1,5 +1,8 @@
 package com.pepper.core.exception;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.UndeclaredThrowableException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -37,10 +40,17 @@ public class ExceptionData {
 			} else if (e instanceof NoPermissionException) {
 				return returnResultData(e,ResultEnum.Status.NO_PERMISSION,e.getMessage());
 			} else if (e instanceof RpcException) {
-				return returnResultData(e,ResultEnum.Status.SYSTEM_ERROR,"程序可能开小差了,对此我们深表抱歉!(错误代码:RpcException)");
+				return returnResultData(e,ResultEnum.Status.SYSTEM_ERROR,"程序可能开小差了,(错误代码:RpcException)");
+			} else if (e instanceof UndeclaredThrowableException){
+				while(e.getCause()!=null && (e instanceof InvocationTargetException ? ((InvocationTargetException) e).getTargetException()!=null : true)){
+					e = e.getCause();
+					if(e instanceof InvocationTargetException){
+						e = ((InvocationTargetException) e).getTargetException();
+					}
+				}
+				return returnResultData(e,ResultEnum.Status.SYSTEM_ERROR,e.getMessage());
 			} else {
-				e.printStackTrace();
-				return returnResultData(e,ResultEnum.Status.SYSTEM_ERROR,"程序可能开小差了,对此我们深表抱歉!(错误代码:Unknown)");
+				return returnResultData(e,ResultEnum.Status.SYSTEM_ERROR,"程序可能开小差了,(错误代码:Unknown)");
 			}
 		}else if (responseType.equals(ResponseType.VIEW)) {
 			HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
@@ -52,12 +62,12 @@ public class ExceptionData {
 			} else if (e instanceof BusinessException) {
 				return returnView(returnType,"redirect:/500",e.getMessage());
 			} else {
-				e.printStackTrace();
 				return returnView(returnType,"redirect:/500",e.getMessage());
 			}
 		} else {
-			throw new RuntimeException(e.getMessage(),e);
+			new RuntimeException(e.getMessage(),e);
 		}
+		return responseType;
 	}
 	
 	private ResultData returnResultData(Throwable e, ResultEnum.Status status, String message ){

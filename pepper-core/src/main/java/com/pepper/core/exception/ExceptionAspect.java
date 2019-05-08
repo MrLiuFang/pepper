@@ -45,7 +45,7 @@ public class ExceptionAspect {
 				if(arg instanceof BindingResult){
 					BindingResult bindingResult = (BindingResult) arg;
 					for (FieldError error : bindingResult.getFieldErrors()) {
-						throw new BusinessException(error.getDefaultMessage());
+						new BusinessException(error.getDefaultMessage());
 					}
 				}
 			}

@@ -28,6 +28,8 @@ import javax.management.ReflectionException;
 import javax.servlet.ServletContext;
 
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.state.ConnectionState;
+import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.dubbo.common.utils.NetUtils;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
@@ -80,6 +82,14 @@ public abstract class AbsRegisterUrl implements ApplicationListener<ContextRefre
 
 	public void init() {
 		registerUrl();
+		curatorFramework.getConnectionStateListenable().addListener(new ConnectionStateListener() {
+			@Override
+			public void stateChanged(CuratorFramework client, ConnectionState newState) {
+				if (newState == ConnectionState.RECONNECTED) {
+					registerUrl();
+				}
+			}
+		});
 	}
 
 	public void registerUrl() {
@@ -136,7 +146,7 @@ public abstract class AbsRegisterUrl implements ApplicationListener<ContextRefre
 		if (stat != null) {
 			curatorFramework.delete().forPath(sb.toString());
 		}
-		logger.info("注册url： {} --地址-- {}:{} ", path, host, port);
+		logger.info("注册url： {}", sb.toString());
 		curatorFramework.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(sb.toString());
 	}
 
