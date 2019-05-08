@@ -158,7 +158,7 @@ public class SelectRepositoryImpl<T> implements SelectRepository<T> {
 	private List<?> executeJpql(final Pager<?> pager, final String jpql, final Map<String, Object> searchParameter) {
 		Query query = entityManager.createQuery(jpql);
 		RepositoryParameter.setParameter(query, searchParameter);
-		query.setFirstResult(pager.getPageNo()-1);
+		query.setFirstResult((pager.getPageNo()-1) * pager.getPageSize());
 		query.setMaxResults(pager.getPageSize());
 		return query.getResultList();
 	}
