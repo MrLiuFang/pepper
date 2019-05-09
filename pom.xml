@@ -58,6 +58,7 @@
 		<kaptcha.version>2.3.2</kaptcha.version>
 		<fescar.version>0.4.2</fescar.version>
 		<jsoup.version>1.11.3</jsoup.version>
+		<poi.version>4.1.0</poi.version>
 	</properties>
 
 
@@ -348,6 +349,11 @@
 				<version>${commons-pool2.version}</version>
 			</dependency>
 
+			<dependency>
+			    <groupId>org.apache.poi</groupId>
+			    <artifactId>poi-ooxml</artifactId>
+			    <version>${poi.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
