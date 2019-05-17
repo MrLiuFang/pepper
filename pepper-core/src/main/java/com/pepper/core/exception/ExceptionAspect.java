@@ -53,8 +53,8 @@ public class ExceptionAspect {
 		} catch (Throwable e) {
 			ExceptionData exceptionData = new ExceptionData();
 			Object o = exceptionData.getResultData(e, method.getReturnType(), methodResponseBody, controllerResponseBody, controllerRestController);
-//			e.printStackTrace();
-			logger.debug(e.getMessage());
+			e.printStackTrace();
+//			logger.debug(e.getMessage());
 			exceptionData = null;
 			return o;
 		}
