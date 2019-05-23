@@ -119,7 +119,7 @@ public abstract class BaseServiceImpl<T>	 implements BaseService<T> {
 	@Override
 	public T findById(Serializable id) {
 		try {
-			if(existsById(id)) {
+			if(id!=null) {
 				Optional<T> optional =  baseDao.findById(id);
 				if(optional.isPresent()) {
 					return optional.get();
