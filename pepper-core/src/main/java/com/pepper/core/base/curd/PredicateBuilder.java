@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +74,7 @@ public class PredicateBuilder {
 		return predicates;
 	}
 
+	@SuppressWarnings("unchecked")
 	private static synchronized Predicate criteriaBuilder(final List<Path<?>> path, final String searchType,
 			final Object value, final CriteriaBuilder criteriaBuilder) {
 		if (path == null) {
@@ -124,6 +126,18 @@ public class PredicateBuilder {
 			break;
 		case SearchConstant.LT:
 			predicate = predicateNumber(path.get(0), searchType, value, criteriaBuilder);
+			break;
+		case SearchConstant.GREATER_THAN:
+			predicate = criteriaBuilder.greaterThan((Expression<Date>)path.get(0),(Date)value);
+			break;
+		case SearchConstant.GREATER_THAN_OR_EQUAL_TO:
+			predicate = criteriaBuilder.greaterThanOrEqualTo((Expression<Date>)path.get(0),(Date)value);
+			break;
+		case SearchConstant.LESS_THAN:
+			predicate = criteriaBuilder.lessThan((Expression<Date>)path.get(0),(Date)value);
+			break;
+		case SearchConstant.LESS_THAN_OR_EQUAL_TO:
+			predicate = criteriaBuilder.lessThanOrEqualTo((Expression<Date>)path.get(0),(Date)value);
 			break;
 		case SearchConstant.OR:
 			List<Predicate> or = new ArrayList<Predicate>();
@@ -188,45 +202,38 @@ public class PredicateBuilder {
 		return predicate;
 	}
 
-	@SuppressWarnings("unused")
+	@SuppressWarnings("unchecked")
 	private static synchronized Predicate predicateNumber(final Path<?> path, final String searchType, final Object value,
 			final CriteriaBuilder criteriaBuilder) {
 		Predicate predicate = null;
-		Number newValue = null;
-		Expression<Number> expression = null;
 		if (value instanceof Long) {
-			newValue = Long.valueOf(value.toString());
 			path.as(Long.class);
 		} else if (value instanceof Integer) {
-			newValue = Integer.valueOf(value.toString());
 			path.as(Integer.class);
 		} else if (value instanceof Double) {
-			newValue = Double.valueOf(value.toString());
 			path.as(Double.class);
 		} else if (value instanceof Float) {
-			newValue = Float.valueOf(value.toString());
 			path.as(Float.class);
 		} else if (value instanceof BigDecimal) {
-			newValue = new BigDecimal(value.toString());
 			path.as(BigDecimal.class);
+		}else if (value instanceof Date) {
+			path.as(Date.class);
 		}
-		if (newValue != null && expression != null) {
-			switch (searchType.toUpperCase()) {
-			case SearchConstant.GE://大于等于 
-				predicate = criteriaBuilder.ge(expression, newValue);
-				break;
-			case SearchConstant.GT://大于
-				predicate = criteriaBuilder.gt(expression, newValue);
-				break;
-			case SearchConstant.LE://小于
-				predicate = criteriaBuilder.le(expression, newValue);
-				break;
-			case SearchConstant.LT://小于等于
-				predicate = criteriaBuilder.lt(expression, newValue);
-				break;
-			default:
-				break;
-			}
+		switch (searchType.toUpperCase()) {
+		case SearchConstant.GE://大于等于 
+			predicate = criteriaBuilder.ge((Expression<Number>) path,(Number)value);
+			break;
+		case SearchConstant.GT://大于
+			predicate = criteriaBuilder.gt((Expression<Number>) path, (Number)value);
+			break;
+		case SearchConstant.LE://小于
+			predicate = criteriaBuilder.le((Expression<Number>) path, (Number)value);
+			break;
+		case SearchConstant.LT://小于等于
+			predicate = criteriaBuilder.lt((Expression<Number>) path, (Number)value);
+			break;
+		default:
+			break;
 		}
 		return predicate;
 	}

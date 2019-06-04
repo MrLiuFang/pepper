@@ -59,6 +59,7 @@
 		<fescar.version>0.4.2</fescar.version>
 		<jsoup.version>1.11.3</jsoup.version>
 		<poi.version>4.1.0</poi.version>
+		<xmlbeans.version>3.1.0</xmlbeans.version>
 	</properties>
 
 
@@ -351,8 +352,23 @@
 
 			<dependency>
 			    <groupId>org.apache.poi</groupId>
+			    <artifactId>poi</artifactId>
+			    <version>${poi.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.apache.poi</groupId>
 			    <artifactId>poi-ooxml</artifactId>
 			    <version>${poi.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.apache.poi</groupId>
+			    <artifactId>poi-ooxml-schemas</artifactId>
+			    <version>${poi.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.apache.xmlbeans</groupId>
+			    <artifactId>xmlbeans</artifactId>
+			    <version>${xmlbeans.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
