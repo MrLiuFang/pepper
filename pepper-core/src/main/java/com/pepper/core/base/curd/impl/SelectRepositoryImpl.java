@@ -26,6 +26,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
+import com.pepper.core.IEnum;
 import com.pepper.core.Pager;
 import com.pepper.core.base.curd.PredicateBuilder;
 import com.pepper.core.base.curd.RepositoryParameter;
@@ -182,7 +183,13 @@ public class SelectRepositoryImpl<T> implements SelectRepository<T> {
 		countSql.append(") tb");
 		Query query = entityManager.createNativeQuery(countSql.toString());
 		for(int i =1; i<=parameter.size(); i++){
-			query.setParameter(i, searchParameter.get(((NamedParameterSpecification)parameter.get(i-1)).getName()));
+			Object object = searchParameter.get( ((NamedParameterSpecification)parameter.get(i-1)).getName());
+			if(object.getClass().isEnum() ) {
+				query.setParameter(i, ((IEnum)object).getKey());
+			}else {
+				query.setParameter(i, object);
+			}
+			
 		}
 		return Long.valueOf(query.getSingleResult().toString());
 	}
