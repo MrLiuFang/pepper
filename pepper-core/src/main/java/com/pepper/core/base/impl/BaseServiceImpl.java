@@ -199,26 +199,29 @@ public abstract class BaseServiceImpl<T>	 implements BaseService<T> {
 	 * @param entity
 	 */
 	private void setCreateInfo(final T entity){
-		Class<?> baseModel = entity.getClass().getSuperclass();
-		if(baseModel!=null && baseModel.getName().equals(BaseModel.class.getName())){
-			Object user = currentUser.getCurrentUser();
-			Field createDate = ReflectionUtils.findField(baseModel, "createDate");
-			if(createDate!=null){
-				createDate.setAccessible(true);
-				ReflectionUtils.setField(createDate, entity, new Date());
-				createDate.setAccessible(false);
-			}
-			Field createUser = ReflectionUtils.findField(baseModel, "createUser");
-			if(createUser != null && user != null){
-				Field id = ReflectionUtils.findField(user.getClass(), "id");
-				if(id != null){
-					id.setAccessible(true);
-					createUser.setAccessible(true);
-					ReflectionUtils.setField(createUser, entity, ReflectionUtils.getField(id, user));
-					createUser.setAccessible(false);
-					id.setAccessible(false);
+		try {
+			Class<?> baseModel = entity.getClass().getSuperclass();
+			if(baseModel!=null && baseModel.getName().equals(BaseModel.class.getName())){
+				Object user = currentUser.getCurrentUser();
+				Field createDate = ReflectionUtils.findField(baseModel, "createDate");
+				if(createDate!=null){
+					createDate.setAccessible(true);
+					ReflectionUtils.setField(createDate, entity, new Date());
+					createDate.setAccessible(false);
+				}
+				Field createUser = ReflectionUtils.findField(baseModel, "createUser");
+				if(createUser != null && user != null){
+					Field id = ReflectionUtils.findField(user.getClass(), "id");
+					if(id != null){
+						id.setAccessible(true);
+						createUser.setAccessible(true);
+						ReflectionUtils.setField(createUser, entity, ReflectionUtils.getField(id, user));
+						createUser.setAccessible(false);
+						id.setAccessible(false);
+					}
 				}
 			}
+		}catch (Exception e) {
 		}
 	}
 	
@@ -227,26 +230,30 @@ public abstract class BaseServiceImpl<T>	 implements BaseService<T> {
 	 * @param entity
 	 */
 	private void setUpdateInfo(final T entity){
-		Class<?> baseModel = entity.getClass().getSuperclass();
-		if(baseModel!=null && baseModel.getName().equals(BaseModel.class.getName())){
-			Object user = currentUser.getCurrentUser();
-			Field updateDate = ReflectionUtils.findField(baseModel, "updateDate");
-			if(updateDate!=null){
-				updateDate.setAccessible(true);
-				ReflectionUtils.setField(updateDate, entity, new Date());
-				updateDate.setAccessible(false);
-			}
-			Field updateUser = ReflectionUtils.findField(baseModel, "updateUser");
-			if(updateUser != null && user != null){
-				Field id = ReflectionUtils.findField(user.getClass(), "id");
-				if(id != null){
-					id.setAccessible(true);
-					updateUser.setAccessible(true);
-					ReflectionUtils.setField(updateUser, entity, ReflectionUtils.getField(id, user));
-					updateUser.setAccessible(false);
-					id.setAccessible(false);
+		try {
+			Class<?> baseModel = entity.getClass().getSuperclass();
+			if(baseModel!=null && baseModel.getName().equals(BaseModel.class.getName())){
+				Object user = currentUser.getCurrentUser();
+				Field updateDate = ReflectionUtils.findField(baseModel, "updateDate");
+				if(updateDate!=null){
+					updateDate.setAccessible(true);
+					ReflectionUtils.setField(updateDate, entity, new Date());
+					updateDate.setAccessible(false);
+				}
+				Field updateUser = ReflectionUtils.findField(baseModel, "updateUser");
+				if(updateUser != null && user != null){
+					Field id = ReflectionUtils.findField(user.getClass(), "id");
+					if(id != null){
+						id.setAccessible(true);
+						updateUser.setAccessible(true);
+						ReflectionUtils.setField(updateUser, entity, ReflectionUtils.getField(id, user));
+						updateUser.setAccessible(false);
+						id.setAccessible(false);
+					}
 				}
 			}
+		}
+		catch (Exception e) {
 		}
 	}
 
