@@ -7,6 +7,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -22,10 +24,10 @@ import com.pepper.core.constant.GlobalConstant;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
-public class Pager<T> extends ResultData implements Serializable {
+public class Pager<T> extends ResultData  implements Serializable  {
 	private static final long serialVersionUID = -2185444016922016927L;
 	private long totalRow;
-	private int pageSize = 20;
+	private int pageSize = 30;
 	private int pageNo = 1;
 	private List<T> results = new ArrayList<T>();
 	
@@ -93,7 +95,7 @@ public class Pager<T> extends ResultData implements Serializable {
 		}
 		jpqlParameter = new JpqlParameter();
 	}
-	
+
 	
 	
 
