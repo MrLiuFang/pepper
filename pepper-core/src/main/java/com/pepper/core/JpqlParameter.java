@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -101,8 +102,8 @@ public class JpqlParameter implements Serializable {
 		this.searchParameter.put(key, value);
 	}
 
-	public void setSortParameter(String key, Object value) {
-		this.sortParameter.put(key, value);
+	public void setSortParameter(String key, Direction value) {
+		this.sortParameter.put(key, value.name());
 	}
 	
 	
