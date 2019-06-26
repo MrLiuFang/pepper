@@ -109,11 +109,7 @@ public class SearchConstant {
 	@Deprecated
 	public static final String ISEMPTY ="ISEMPTY";
 	
-	/**
-	 * 未现实禁止使用
-	 */
-	@Deprecated
-	public static final String ISFALSE ="ISFALSE";
+	public static final String IS_FALSE ="IS_FALSE";
 	
 	/**
 	 * 未现实禁止使用
@@ -133,9 +129,5 @@ public class SearchConstant {
 	@Deprecated
 	public static final String ISNOTMEMBER ="ISNOTMEMBER";
 	
-	/**
-	 * 未现实禁止使用
-	 */
-	@Deprecated
-	public static final String ISTRUE ="ISTRUE";
+	public static final String IS_TRUE ="IS_TRUE";
 }

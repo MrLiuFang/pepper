@@ -153,6 +153,12 @@ public class PredicateBuilder {
 			}
 			predicate = criteriaBuilder.or(orLike.toArray(new Predicate[orLike.size()]));
 			break;
+		case SearchConstant.IS_FALSE:
+			predicate = criteriaBuilder.isFalse((Expression<Boolean>)path.get(0));
+			break;
+		case SearchConstant.IS_TRUE:
+			predicate = criteriaBuilder.isTrue((Expression<Boolean>)path.get(0));
+			break;
 		default:
 			break;
 		}
