@@ -5,8 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import org.apache.dubbo.common.Constants;
+import org.apache.dubbo.common.constants.CommonConstants;
 import org.apache.dubbo.common.extension.Activate;
 import org.apache.dubbo.rpc.Filter;
 import org.apache.dubbo.rpc.Invocation;
@@ -18,7 +17,7 @@ import org.apache.dubbo.rpc.RpcException;
  * @author mrliu
  *
  */
-@Activate(group = Constants.CONSUMER)
+@Activate(group = CommonConstants.CONSUMER)
 public class TraceConsumerFilter implements Filter{
 	@Override
 	public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {

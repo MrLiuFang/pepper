@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.4.RELEASE</version>
+		<version>2.1.6.RELEASE</version>
 	</parent>
 
 	<groupId>com.pepper</groupId>
@@ -47,14 +47,14 @@
 		<rocketmq-client.version>4.3.0</rocketmq-client.version>
 		<spring-boot-starter-rocketmq.version>1.0.0-SNAPSHOT</spring-boot-starter-rocketmq.version>
 		<javassist.version>3.23.1-GA</javassist.version>
-		<dubbo.verison>2.7.0</dubbo.verison>
+		<dubbo.verison>2.7.2</dubbo.verison>
 		<spring-context-support.version>1.0.2</spring-context-support.version>
 		<spring-cloud.version>2.0.2.RELEASE</spring-cloud.version>
 		<curator-framework.version>4.1.0</curator-framework.version>
 		<zkclient.version>0.11</zkclient.version>
 		<hutool.version>4.4.5</hutool.version>
 		<fescar.version>0.2.1</fescar.version>
-		<zookeeper.version>3.5.4-beta</zookeeper.version>
+		<zookeeper.version>3.5.5</zookeeper.version>
 		<kaptcha.version>2.3.2</kaptcha.version>
 		<fescar.version>0.4.2</fescar.version>
 		<jsoup.version>1.11.3</jsoup.version>
@@ -306,7 +306,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.csource</groupId>
-				<artifactId>fastdfs-client-java</artifactId>
+    			<artifactId>fastdfs-client-java</artifactId>
 				<version>${fastdfs-client-java.version}</version>
 			</dependency>
 			<dependency>
@@ -444,8 +444,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.csource</groupId>
-			<artifactId>fastdfs-client-java</artifactId>
+		   <groupId>org.csource</groupId>
+    		<artifactId>fastdfs-client-java</artifactId>
 		</dependency>
 
 		<dependency>
@@ -509,21 +509,6 @@
 		</dependency>
 
 	</dependencies>
-
-	<distributionManagement>
-		<repository>
-			<id>nexus-releases</id>
-			<name>NexusReleaseRepository</name>
-			<url>http://10.10.11.50:8081/nexus/content/repositories/releases/</url>
-			<uniqueVersion>false</uniqueVersion>
-		</repository>
-		<snapshotRepository>
-			<id>nexus-snapshots</id>
-			<name>NexusSnapshotRepository</name>
-			<url>http://10.10.11.50:8081/nexus/content/repositories/snapshots/</url>
-			<uniqueVersion>false</uniqueVersion>
-		</snapshotRepository>
-	</distributionManagement>
 
 	<repositories>
 		<repository>
