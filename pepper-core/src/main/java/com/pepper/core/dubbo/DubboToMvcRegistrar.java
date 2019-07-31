@@ -1,6 +1,9 @@
 package com.pepper.core.dubbo;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +25,15 @@ import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 
+import cn.hutool.aop.proxy.CglibProxyFactory;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtField;
 import javassist.NotFoundException;
+import javassist.bytecode.ClassFile;
+import javassist.bytecode.ConstPool;
+import javassist.bytecode.annotation.Annotation;
 
 /**
  * 
@@ -83,9 +90,18 @@ public class DubboToMvcRegistrar
 		ProtectionDomain domain = this.getClass().getProtectionDomain();
 		for (String className : classNameList) {
 			CtClass ct = pool.get(className);
-			Service service = (Service) ct.getAnnotation(Service.class);
+			ClassFile classFile = ct.getClassFile();  
+			ct.defrost();  
+			Object service = ct.getAnnotation(Service.class);
 			if (service != null) {
+				InvocationHandler invocationHandler = Proxy.getInvocationHandler(service);
+				Field[] fields = invocationHandler.getClass().getDeclaredFields();
 				service = null;
+				ConstPool constPool = classFile.getConstPool();  
+	         Annotation tableAnnotation = new Annotation("javax.persistence.Table", constPool);
+	         service = tableAnnotation;
+	         Object service1 = ct.getAnnotation(Service.class);
+				System.out.println(className);
 			}
 			
 			CtField[] fields = ct.getDeclaredFields();
@@ -96,10 +112,9 @@ public class DubboToMvcRegistrar
 				}
 			}
 			if(!ct.isAnnotation()&&!ct.isArray()&&!ct.isEnum()&&!ct.isFrozen()&&!ct.isInterface()&&!ct.isModified()&&!ct.isPrimitive()){
-				System.out.println(ct.getName());
 				ct.toBytecode();
 				ct.prune();
-				ct.toClass(loader, domain);
+//				ct.toClass(loader, domain);
 			}
 			ct.writeFile();
 			

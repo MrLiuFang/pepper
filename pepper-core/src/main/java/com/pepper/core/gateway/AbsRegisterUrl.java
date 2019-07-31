@@ -146,7 +146,7 @@ public abstract class AbsRegisterUrl implements ApplicationListener<ContextRefre
 		if (stat != null) {
 			curatorFramework.delete().forPath(sb.toString());
 		}
-		logger.info("注册url： {}", sb.toString());
+//		logger.info("注册url： {}", sb.toString());
 		curatorFramework.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(sb.toString());
 	}
 

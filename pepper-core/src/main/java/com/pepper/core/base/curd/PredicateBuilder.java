@@ -38,7 +38,7 @@ public class PredicateBuilder {
 	 * @param searchParameter
 	 * @return
 	 */
-	public static synchronized List<Predicate> builder(final Root<?> root,
+	public static List<Predicate> builder(final Root<?> root,
 			final CriteriaBuilder criteriaBuilder, final Map<String, Object> searchParameter) {
 		List<Predicate> predicates = new ArrayList<>();
 		Iterator<Entry<String, Object>> iterator = searchParameter.entrySet().iterator();
@@ -75,7 +75,7 @@ public class PredicateBuilder {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static synchronized Predicate criteriaBuilder(final List<Path<?>> path, final String searchType,
+	private static Predicate criteriaBuilder(final List<Path<?>> path, final String searchType,
 			final Object value, final CriteriaBuilder criteriaBuilder) {
 		if (path == null) {
 			return null;
@@ -89,20 +89,20 @@ public class PredicateBuilder {
 				predicate = criteriaBuilder.equal(path.get(0).as(path.get(0).getJavaType()), value);
 			}
 			break;
-		case SearchConstant.NOTEQUAL:
+		case SearchConstant.NOT_EQUAL:
 			if (path.get(0).getJavaType().isEnum()) {
 				predicate = predicateEnum(path.get(0),path.get(0).getJavaType(),value,criteriaBuilder);
 			}else{
 				predicate = criteriaBuilder.notEqual(path.get(0).as(path.get(0).getJavaType()), value);
 			}
 			break;
-		case SearchConstant.ISNULL:
+		case SearchConstant.IS_NULL:
 			predicate = criteriaBuilder.isNull(path.get(0).as(path.get(0).getJavaType()));
 			break;
-		case SearchConstant.ISNOTNULL:
+		case SearchConstant.IS_NOT_NULL:
 			predicate = criteriaBuilder.isNotNull(path.get(0).as(path.get(0).getJavaType()));
 			break;
-		case SearchConstant.NOTIN:
+		case SearchConstant.NOT_IN:
 			CriteriaBuilder.In<Object> notIn = predicateIn(path.get(0),path.get(0).getJavaType(),value,criteriaBuilder);
 			predicate = criteriaBuilder.not(notIn);
 			break;
@@ -112,7 +112,7 @@ public class PredicateBuilder {
 		case SearchConstant.LIKE:
 			predicate = criteriaBuilder.like(path.get(0).as(String.class), "%" + value + "%");
 			break;
-		case SearchConstant.NOTLIKE:
+		case SearchConstant.NOT_LIKE:
 			predicate = criteriaBuilder.notLike(path.get(0).as(String.class), "%" + value + "%");
 			break;
 		case SearchConstant.GE:
@@ -146,7 +146,7 @@ public class PredicateBuilder {
 			}
 			predicate = criteriaBuilder.or(or.toArray(new Predicate[or.size()]));
 			break;
-		case SearchConstant.ORLIKE:
+		case SearchConstant.OR_LIKE:
 			List<Predicate> orLike = new ArrayList<Predicate>();
 			for(Path<?> obj : path) {
 				orLike.add( criteriaBuilder.or(criteriaBuilder.like(obj.as(String.class), "%" + value + "%")));
@@ -166,7 +166,7 @@ public class PredicateBuilder {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static synchronized CriteriaBuilder.In<Object> predicateIn(final Path<?> path, final Class<?> classz, final Object value, final CriteriaBuilder criteriaBuilder){
+	private static CriteriaBuilder.In<Object> predicateIn(final Path<?> path, final Class<?> classz, final Object value, final CriteriaBuilder criteriaBuilder){
 		CriteriaBuilder.In<Object> in = criteriaBuilder.in(path.as(classz));
 		if (value instanceof String) {
 			for (String v : String.valueOf(value).split(",")) {
@@ -184,7 +184,7 @@ public class PredicateBuilder {
 		return in;
 	}
 	
-	private static synchronized Predicate predicateEnum(final Path<?> path, final Class<?> classz, final Object value, final CriteriaBuilder criteriaBuilder){
+	private static Predicate predicateEnum(final Path<?> path, final Class<?> classz, final Object value, final CriteriaBuilder criteriaBuilder){
 		Predicate predicate = null;
 		if (classz.isEnum()) {
 			if(value.getClass().isEnum()){
@@ -209,7 +209,7 @@ public class PredicateBuilder {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static synchronized Predicate predicateNumber(final Path<?> path, final String searchType, final Object value,
+	private static Predicate predicateNumber(final Path<?> path, final String searchType, final Object value,
 			final CriteriaBuilder criteriaBuilder) {
 		Predicate predicate = null;
 		if (value instanceof Long) {

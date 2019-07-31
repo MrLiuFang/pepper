@@ -93,9 +93,9 @@ public class DubboDynamicVersionRegistrar implements ImportBeanDefinitionRegistr
 	
 	@SuppressWarnings("unchecked")
 	private void setVersion(InvocationHandler invocationHandler, String interfaceName) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
-		Field value = invocationHandler.getClass().getDeclaredField("memberValues");
-		value.setAccessible(true);
-		Map<String, Object> memberValues = (Map<String, Object>) value.get(invocationHandler);
+		Field field = invocationHandler.getClass().getDeclaredField("memberValues");
+		field.setAccessible(true);
+		Map<String, Object> memberValues = (Map<String, Object>) field.get(invocationHandler);
 		memberValues.put("version", getVersion(interfaceName));
 	}
 	

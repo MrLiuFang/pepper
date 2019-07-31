@@ -17,7 +17,7 @@ public class RepositoryParameter {
 	 * @param query
 	 * @param para
 	 */
-	public synchronized static void setParameter(final Query query,final Map<String, Object> parameter) {
+	public static void setParameter(final Query query,final Map<String, Object> parameter) {
 		if(parameter==null || query==null){
 			return;
 		}
