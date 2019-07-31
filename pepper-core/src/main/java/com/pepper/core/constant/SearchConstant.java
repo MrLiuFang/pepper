@@ -93,7 +93,7 @@ public class SearchConstant {
 	public static final String LESS_THAN = "LESSTHAN";
 	
 	/**
-	 * 大于等于当前时间
+	 * 小于等于当前时间
 	 */
 	public static final String LESS_THAN_OR_EQUAL_TO = "LESSTHANOREQUALTO";
 	

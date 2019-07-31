@@ -99,6 +99,7 @@ public class HttpUtil {
 	public String post(String scheme, String host, String path, Integer port, Map<String, String> parameter) throws Exception {
 		return post(scheme, host, path, port, parameter, null);
 	}
+
 	
 	/**
 	 * post请求
@@ -113,6 +114,18 @@ public class HttpUtil {
 	 */
 	public String post(String scheme, String host, String path, Integer port, Map<String, String> parameter, String entityString) throws Exception {
 		return post(scheme, host, path, port, parameter, entityString, null);
+	}
+	
+	/**
+	 * 
+	 * @param url
+	 * @param parameter
+	 * @return
+	 * @throws Exception
+	 */
+	public String post(String url, Map<String, String> parameter) throws Exception {
+		URI uri = createURI(url, parameter);
+		return post(uri,null,null);
 	}
 
 	/**
@@ -129,8 +142,12 @@ public class HttpUtil {
 	 * @throws Exception
 	 */
 	public String post(String scheme, String host, String path, Integer port, Map<String, String> parameter,
-			String entityString,String contentType) throws Exception {
+		String entityString,String contentType) throws Exception {
 		URI uri = createURI(scheme, host, path, port, parameter);
+		return post(uri,entityString,contentType);
+	}
+	
+	private String post(URI uri,String entityString,String contentType) throws Exception {
 		HttpPost httpPost = new HttpPost(uri);
 		if (StringUtils.hasText(entityString)) {
 			StringEntity requestEntity = new StringEntity(entityString, "utf-8");
@@ -177,9 +194,23 @@ public class HttpUtil {
 	 */
 	private URI createURI(String scheme, String host, String path, Integer port, Map<String, String> parameter) {
 		URIBuilder uriBuilder;
+		uriBuilder = new URIBuilder().setScheme(scheme).setHost(host).setPath(path).setPort(port == null ? 80 : port);
+		return createURI(uriBuilder,parameter);
+	}
+	
+	private URI createURI(String url,Map<String, String> parameter) {
+		URIBuilder uriBuilder;
 		try {
-			uriBuilder = new URIBuilder().setScheme(scheme).setHost(host).setPath(path)
-					.setPort(port == null ? 80 : port);
+			uriBuilder = new URIBuilder(url);
+			return createURI(uriBuilder,parameter);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	private URI createURI(URIBuilder uriBuilder,Map<String, String> parameter) {
+		try {
 			setParameter(uriBuilder, parameter);
 			return uriBuilder.build();
 		} catch (URISyntaxException e) {
