@@ -14,11 +14,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.hql.internal.ast.QueryTranslatorImpl;
 import org.hibernate.param.NamedParameterSpecification;
 import org.hibernate.param.ParameterSpecification;
+import org.hibernate.transform.Transformers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -143,7 +145,8 @@ public class SelectRepositoryImpl<T> implements SelectRepository<T> {
 	@Override
 	public Pager<Map<String, Object>> findNavigatorToMap(final Pager<Map<String, Object>> pager, final String jpql,
 			final Map<String, Object> searchParameter) {
-		pager.setResults((List<Map<String, Object>>) executeJpql(pager, jpql, searchParameter));
+		List<Map<String, Object>> list =  (List<Map<String, Object>>) executeJpql(pager, jpql, searchParameter);
+		pager.setResults(list);
 		pager.setTotalRow(getCount(jpql, searchParameter));
 		return pager;
 	}
