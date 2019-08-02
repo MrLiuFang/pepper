@@ -1,7 +1,7 @@
 package com.pepper.core.dubbo;
 import java.util.Map;
 
-import org.apache.dubbo.common.Constants;
+import org.apache.dubbo.common.constants.CommonConstants;
 import org.apache.dubbo.common.extension.Activate;
 import org.apache.dubbo.rpc.Filter;
 import org.apache.dubbo.rpc.Invocation;
@@ -14,7 +14,7 @@ import org.apache.dubbo.rpc.RpcException;
  * @author mrliu
  *
  */
-@Activate(group = Constants.PROVIDER)
+@Activate(group = CommonConstants.PROVIDER)
 public class TraceProviderFilter implements Filter {
 
 	@Override
