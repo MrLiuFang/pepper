@@ -54,6 +54,7 @@ public class ExceptionAspect {
 			ExceptionData exceptionData = new ExceptionData();
 			Object o = exceptionData.getResultData(e, method.getReturnType(), methodResponseBody, controllerResponseBody, controllerRestController);
 			exceptionData = null;
+			e.printStackTrace();
 			return o;
 		}
 		return invokeResult;

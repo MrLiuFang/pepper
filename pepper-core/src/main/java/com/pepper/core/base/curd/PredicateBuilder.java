@@ -148,6 +148,9 @@ public class PredicateBuilder {
 			break;
 		case SearchConstant.OR_LIKE:
 			List<Predicate> orLike = new ArrayList<Predicate>();
+			if(value==null||!StringUtils.hasText(value.toString())) {
+				break;
+			}
 			for(Path<?> obj : path) {
 				orLike.add( criteriaBuilder.or(criteriaBuilder.like(obj.as(String.class), "%" + value + "%")));
 			}

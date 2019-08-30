@@ -15,17 +15,17 @@ public class SearchConstant {
 	/**
 	 * 不等于(用于字符串)
 	 */
-	public static final String NOT_EQUAL = "NOT_EQUAL";
+	public static final String NOT_EQUAL = "NOTEQUAL";
 	
 	/**
 	 * 
 	 */
-	public static final String IS_NULL = "IS_NULL";
+	public static final String IS_NULL = "ISNULL";
 	
 	/**
 	 * 
 	 */
-	public static final String IS_NOT_NULL = "IS_NOT_NULL";
+	public static final String IS_NOT_NULL = "ISNOTNULL";
 	
 	/**
 	 * 
@@ -35,7 +35,7 @@ public class SearchConstant {
 	/**
 	 * 
 	 */
-	public static final String NOT_IN = "NOT_IN";
+	public static final String NOT_IN = "NOTIN";
 	
 	/**
 	 * 模糊查询(用于字符串)
@@ -45,7 +45,7 @@ public class SearchConstant {
 	/**
 	 * 模糊查询(用于字符串)
 	 */
-	public static final String NOT_LIKE = "NOT_LIKE";
+	public static final String NOT_LIKE = "NOTLIKE";
 	
 	/**
 	 * 大于等于(用于数字类型)
@@ -75,7 +75,7 @@ public class SearchConstant {
 	/**
 	 * 
 	 */
-	public static final String OR_LIKE = "OR_LIKE";
+	public static final String OR_LIKE = "ORLIKE";
 	
 	/**
 	 * 大于等于当前时间
@@ -107,27 +107,27 @@ public class SearchConstant {
 	 * 未现实禁止使用
 	 */
 	@Deprecated
-	public static final String IS_EMPTY ="IS_EMPTY";
+	public static final String IS_EMPTY ="ISEMPTY";
 	
-	public static final String IS_FALSE ="IS_FALSE";
-	
-	/**
-	 * 未现实禁止使用
-	 */
-	@Deprecated
-	public static final String IS_MEMBER ="IS_MEMBER";
+	public static final String IS_FALSE ="ISFALSE";
 	
 	/**
 	 * 未现实禁止使用
 	 */
 	@Deprecated
-	public static final String IS_NOT_EMPTY ="IS_NOT_EMPTY";
+	public static final String IS_MEMBER ="ISMEMBER";
 	
 	/**
 	 * 未现实禁止使用
 	 */
 	@Deprecated
-	public static final String IS_NOT_MEMBER ="IS_NOT_MEMBER";
+	public static final String IS_NOT_EMPTY ="ISNOTEMPTY";
 	
-	public static final String IS_TRUE ="IS_TRUE";
+	/**
+	 * 未现实禁止使用
+	 */
+	@Deprecated
+	public static final String IS_NOT_MEMBER ="ISNOTMEMBER";
+	
+	public static final String IS_TRUE ="ISTRUE";
 }
