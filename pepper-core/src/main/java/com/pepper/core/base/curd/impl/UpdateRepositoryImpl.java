@@ -2,6 +2,7 @@ package com.pepper.core.base.curd.impl;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -56,10 +57,11 @@ public class UpdateRepositoryImpl<T>  implements UpdateRepository<T> {
 	@Override
 	public void update(final T entity) {
 		Serializable id = entityInformation.getId(entity);
-		T oldEntity = simpleJpaRepository.findById(id).get();
-		if(oldEntity == null){
+		Optional<T> optional = simpleJpaRepository.findById(id);
+		if(!optional.isPresent()) {
 			return;
 		}
+		T oldEntity = optional.get();
 		BeanUtil.copyProperties(entity,oldEntity,CopyOptions.create().setIgnoreNullValue(true).setIgnoreError(true));
 		getSession().update(oldEntity);
 	}
