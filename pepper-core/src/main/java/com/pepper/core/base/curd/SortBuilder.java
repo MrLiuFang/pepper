@@ -32,8 +32,14 @@ public class SortBuilder {
 		while (iterator.hasNext()) {
 			entry = iterator.next();
 			String key = entry.getKey();
-			String value = (String) entry.getValue();
-			Order order = new Order(Direction.valueOf(value.toUpperCase()), key);
+			Direction direction = null;
+			if(entry.getValue() instanceof Direction ) {
+				direction = (Direction) entry.getValue();
+			}else {
+				String value = (String) entry.getValue();
+				direction = Direction.valueOf(value.toUpperCase());
+			}
+			Order order = new Order(direction, key);
 			orders.add(order);
 		}
 		
