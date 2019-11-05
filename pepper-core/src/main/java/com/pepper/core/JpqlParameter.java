@@ -12,6 +12,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pepper.core.constant.GlobalConstant;
+import com.pepper.core.constant.SearchConstant;
 
 /**
  * 构建查询参数
@@ -98,10 +99,26 @@ public class JpqlParameter implements Serializable {
 		this.sortParameter = sortParameter;
 	}
 	
+	/**
+	 * Examples:
+     * <blockquote><pre>
+     * setSearchParameter(SearchConstant.EQUAL+"_nodeTypeId",nodeTypeId)
+     * </pre></blockquote>
+	 * @param key
+	 * @param value
+	 */
 	public void setSearchParameter(String key, Object value) {
 		this.searchParameter.put(key, value);
 	}
 
+	/**
+	 * Examples:
+     * <blockquote><pre>
+     * setSortParameter("assignDate", Direction.DESC)
+     * </pre></blockquote>
+	 * @param key
+	 * @param value
+	 */
 	public void setSortParameter(String key, Direction value) {
 		this.sortParameter.put(key, value.name());
 	}

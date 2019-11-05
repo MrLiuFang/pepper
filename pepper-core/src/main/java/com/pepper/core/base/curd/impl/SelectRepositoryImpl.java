@@ -66,7 +66,11 @@ public class SelectRepositoryImpl<T> implements SelectRepository<T> {
 
 	@Override
 	public T findOne(final String jpql) {
-		List<T> list = find(jpql);
+		Pager<T> pager = new Pager<T>();
+		pager.setPageNo(1);
+		pager.setPageSize(1);
+		pager = findNavigator(pager ,jpql);
+		List<T> list = pager.getResults();
 		if (list != null && list.size() > 0) {
 			return list.get(0);
 		}
